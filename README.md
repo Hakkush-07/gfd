@@ -4,21 +4,21 @@
 
 #### Possible Lines
 
-<variables> = <expression>
+`<variables>` = `<expression>`
 
-\> <param count> <function id> = <function body>
+\> `<param count>` `<function id>` = `<function body>`
 
-% <import file>
+% `<import file>`
 
-\# <comments>
+\# `<comments>`
 
 #### Explanations
 
-<expression>: mix of <variable>, <function>, uses postfix
+`<expression>`: mix of `<variable>`, `<function>`, uses postfix
 
-<function body>: mix of $<parameter index>, <variable>, <function>, again postfix
+`<function body>`: mix of `$<parameter index>`, `<variable>`, `<function>`, again postfix
 
-<function> can include trailing * which means that output of that function will be included with a random label in the final figure (used for including the outputs of inline calls)
+`<function>` can include trailing * which means that output of that function will be included with a random label in the final figure (used for including the outputs of inline calls)
 
 when an import line encountered, execution switches to that file
 
