@@ -1,0 +1,6 @@
+> 3 radical_center = $1 $2 radical_axis $1 $3 radical_axis intersection
+> 3 tangent_to_circumcircle = $1 $1 $2 $3 circumcenter perpendicular_through
+# etc.
+
+A B C u v w = triangle
+
