@@ -1,14 +1,13 @@
 A B C u v w = triangle
 omega = A B C circumcircle
 S = B C perpendicular_bisector A B C external_angle_bisector intersection
-x = B S line
-D = A u perpendicular_line x intersection
-E . = A u perpendicular_line omega intersections_lc
+z = A u perpendicular_line
+D = z B S line* intersection
+E . = z omega intersections_lc
 L = D u parallel_line B E line* intersection
 omega2 = B D L circumcircle
 P . = omega omega2 intersections_cc
-y . = P omega2 tangent_lines
-z = A B C internal_angle_bisector
-T = x z intersection
-? x y z concurrent
+x . = P omega2 tangent_lines
+? B S line A B C internal_angle_bisector x is_concurrent
+
 

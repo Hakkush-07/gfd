@@ -23,81 +23,112 @@ class Obj:
     def __hash__(self):
         return hash(self.id)
 
-parallel_lines = []
-perpendicular_lines = []
-tangent_circles = []
-
 class Point(Obj):
     def __init__(self, x, y):
         super().__init__()
         self.x = x
         self.y = y
+
+        self.lines = set()
+        self.circles = set()
     
     def __repr__(self):
         return f"P({self.x}, {self.y})[{self.id}]"
     
-    def contained_in_lines(self, lines):
+    def on_lines(self, lines):
         for u in lines:
-            s = Line.contains.get(u, set())
-            s.add(self)
-            Line.contains[u] = s
+            self.lines.add(u)
+            u.points.add(self)
+        return self
+    
+    def on_circles(self, circles):
+        for s in circles:
+            self.circles.add(s)
+            s.points.add(self)
         return self
     
     def asy(self):
         return f"dot('${self.name}$', ({roundx(self.x)}, {roundx(self.y)}), dir(90));"
 
 class Line(Obj):
-    contains = {}
     def __init__(self, a, b, c):
         super().__init__()
         self.a = a
         self.b = b
         self.c = c
-        Line.contains[self] = set()
+
+        self.points = set()
+        self.lines_perpendicular = set()
+        self.lines_parallel = set()
+        self.circles = set()
     
     def __repr__(self):
-        return f"L({self.a}, {self.b}, {self.c})[{self.id}] [contains {len(Line.contains.get(self, 0))} points]"
+        return f"L({self.a}, {self.b}, {self.c})[{self.id}] [contains {len(self.points)} points]"
     
     def __call__(self, a):
         return dot([self.a, self.b, self.c], [a.x, a.y, -1])
     
+    @property
+    def leftmost(self):
+        return min(self.points, key=lambda p: p.x)
+    
+    @property
+    def rightmost(self):
+        return max(self.points, key=lambda p: p.x)
+    
     def contains_points(self, points):
-        s = Line.contains.get(self, set())
         for a in points:
-            s.add(a)
-        Line.contains[self] = s
+            self.points.add(a)
+            a.lines.add(self)
         return self
     
     def perpendicular_to_line(self, u):
-        perpendicular_lines.append((self, u))
+        self.lines_perpendicular.add(u)
+        u.lines_perpendicular.add(self)
         return self
     
     def parallel_to_line(self, u):
-        parallel_lines.append((self, u))
+        self.lines_parallel.add(u)
+        u.lines_parallel.add(self)
+        return self
+    
+    def tangent_to_circles(self, circles):
+        for s in circles:
+            self.circles.add(s)
+            s.lines.add(self)
         return self
     
     def asy(self):
-        a = min(Line.contains[self], key=lambda p: p.x)
-        b = max(Line.contains[self], key=lambda p: p.x)
-        return f"draw(({roundx(a.x)}, {roundx(a.y)}) -- ({roundx(b.x)}, {roundx(b.y)}));"
+        return f"draw(({roundx(self.leftmost.x)}, {roundx(self.leftmost.y)}) -- ({roundx(self.rightmost.x)}, {roundx(self.rightmost.y)}));"
 
 class Circle(Obj):
-    contains = {}
     def __init__(self, o, r):
         super().__init__()
         self.o = o
         self.r = r
-        Circle.contains[self] = set()
+        
+        self.points = set()
+        self.lines = set()
+        self.circles = set()
 
     def __repr__(self):
-        return f"C({self.o}, {self.r})[{self.id}] [contains {len(Circle.contains.get(self, 0))} points]"
+        return f"C({self.o}, {self.r})[{self.id}] [contains {len(self.points)} points]"
     
     def contains_points(self, points):
-        s = Circle.contains.get(self, set())
         for a in points:
-            s.add(a)
-        Circle.contains[self] = s
+            self.points.add(a)
+            a.circles.add(self)
         return self
+    
+    def tangent_to_lines(self, lines):
+        for u in lines:
+            self.lines.add(u)
+            u.circles.add(self)
+        return self
+
+    def tangent_to_circle(self, s):
+        self.circles.add(s)
+        s.circles.add(self)
     
     def asy(self):
         return f"draw(circle(({roundx(self.o.x)}, {roundx(self.o.y)}), {roundx(self.r)}));"
@@ -107,18 +138,20 @@ def distance(x, y):
         return z.__class__.__name__.lower()[0]
     return globals()[f"distance_{f(x)}{f(y)}"](x, y)
 
-def distance_pp(a, b):
-    return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
+def intersection(x, y):
+    def f(z):
+        return z.__class__.__name__.lower()[0]
+    return globals()[f"intersection_{f(x)}{f(y)}"](x, y)
 
-def distance_pl(a, u):
-    return abs(u(a)) / sqrt(u.a ** 2 + u.b ** 2)
+def intersections(x, y):
+    def f(z):
+        return z.__class__.__name__.lower()[0]
+    return globals()[f"intersections_{f(x)}{f(y)}"](x, y)
 
-def distance_pc(a, s):
-    return abs(s.r - distance_pp(a, s.o))
-
-def angle(u, v):
-    x = u.a * v.a + u.b * v.b
-    return abs(atan((v.a * u.b - u.a * v.b) / x)) if x else pi / 2
+def reflection(x, y):
+    def f(z):
+        return z.__class__.__name__.lower()[0]
+    return globals()[f"reflection_{f(x)}{f(y)}"](x, y)
 
 def triangle():
     a = Point(-0.256, 0.966)
@@ -129,12 +162,15 @@ def triangle():
     w = line(a, b)
     return a, b, c, u, v, w
 
-def intersection(x, y):
-    def f(z):
-        return z.__class__.__name__.lower()[0]
-    return globals()[f"intersection_{f(x)}{f(y)}"](x, y)
+# c
+
+def center(s):
+    return s.o
 
 # pp
+
+def distance_pp(a, b):
+    return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
 
 def midpoint(a, b):
     return Point((a.x + b.x) / 2, (a.y + b.y) / 2)
@@ -159,11 +195,14 @@ def circle_centered(a, b):
 
 # pl
 
+def distance_pl(a, u):
+    return abs(u(a)) / sqrt(u.a ** 2 + u.b ** 2)
+
 def reflection_pl(a, u):
     return reflection_pp(a, foot(a, u))
 
 def foot(a, u):
-    return intersection_ll(u, perpendicular_line(a, u)).contained_in_lines([u])
+    return intersection_ll(u, perpendicular_line(a, u)).on_lines([u])
 
 def perpendicular_line(a, u):
     return Line(u.b, -u.a, a.x * u.b - a.y * u.a).contains_points([a]).perpendicular_to_line(u)
@@ -173,27 +212,36 @@ def parallel_line(a, u):
 
 # pc
 
+def distance_pc(a, s):
+    return abs(s.r - distance_pp(a, s.o))
+
 def tangent_points(a, s):
     return intersections_cc(s, circle_diameter(a, s.o))
 
 def tangent_lines(a, s):
     tp1, tp2 = tangent_points(a, s)
-    tl1 = line(a, tp1) if tp1 else None
-    tl2 = line(a, tp2) if tp2 else None
-    return tl1, tl2
+    return line(a, tp1).tangent_to_circles([s]), line(a, tp2).tangent_to_circles([s])
+
+def tangents(a, s):
+    tp1, tp2 = tangent_points(a, s)
+    return tp1, tp2, line(a, tp1).tangent_to_circles([s]), line(a, tp2).tangent_to_circles([s])
+
+def tangent_line(a, s):
+    return perpendicular_through(a, s.o).tangent_to_circles([s])
 
 def polar(a, s):
     d = (s.r / distance_pp(a, s.o)) ** 2
     p = Point(s.o.x + d * (a.x - s.o.x), s.o.y + d * (a.y - s.o.y))
     return perpendicular_through(p, s.o)
 
-def circle_pc(a, s):
-    return circle_diameter(a, s.o)
-
 # ll
 
+def angle(u, v):
+    x = u.a * v.a + u.b * v.b
+    return abs(atan((v.a * u.b - u.a * v.b) / x)) if x else pi / 2
+
 def intersection_ll(u, v):
-    return Point((u.c * v.b - u.b * v.c) / (u.a * v.b - u.b * v.a), (u.c * v.a - u.a * v.c) / (u.b * v.a - u.a * v.b)).contained_in_lines([u, v])
+    return Point((u.c * v.b - u.b * v.c) / (u.a * v.b - u.b * v.a), (u.c * v.a - u.a * v.c) / (u.b * v.a - u.a * v.b)).on_lines([u, v])
 
 def angle_bisector_1(u, v):
     return Line(u.a / sqrt(u.a ** 2 + u.b ** 2) - v.a / sqrt(v.a ** 2 + v.b ** 2), u.b / sqrt(u.a ** 2 + u.b ** 2) - v.b / sqrt(v.a ** 2 + v.b ** 2), u.c / sqrt(u.a ** 2 + u.b ** 2) - v.c / sqrt(v.a ** 2 + v.b ** 2))
@@ -233,7 +281,7 @@ def intersection_lc_2(u, s):
     return Point(x, y)
 
 def intersections_lc(u, s):
-    return intersection_lc_1(u, s), intersection_lc_2(u, s)
+    return intersection_lc_1(u, s).on_lines([u]).on_circles([s]), intersection_lc_2(u, s).on_lines([u]).on_circles([s])
 
 def pole(u, s):
     d = (s.r / distance_pl(s.o, u)) ** 2
@@ -473,9 +521,9 @@ def not_centers_collinear(s, t, m):
 extension = "gfd"
 object_name = (f"__obj{str(i).zfill(3)}" for i in range(1000))
 
-def asy(objects, checks):
+def asy(objects):
     with open("templates/template.asy", "r+") as file:
-        return file.read().replace("FIGURE", "\n".join([o.asy() for o in objects]) + "\n" + "\n".join([f"// {check_function}({', '.join(parameters)}) = {result}" for parameters, check_function, result in checks]))
+        return file.read().replace("FIGURE", "\n".join([o.asy() for o in objects]))
 
 def update_stack(stack, token, current_objects, custom_functions):
     if token.endswith("*"):
@@ -516,7 +564,6 @@ def from_file(filename):
         content = file.read().splitlines()[::-1]
     objects = {}
     custom_functions = {}
-    checks = []
     while len(content) > 0:
         line = content.pop()
         if not line:
@@ -531,16 +578,13 @@ def from_file(filename):
         if tokens[0] == ">":
             parameter_count = int(tokens[1])
             function_name = tokens[2]
-            assert(tokens[3] == "=")
+            assert tokens[3] == "="
             body = tokens[4:]
             custom_functions[function_name] = (parameter_count, body)
             continue
         if tokens[0] == "?":
-            parameters = tokens[1:-1]
-            check_function = tokens[-1]
-            result = globals()[f"is_{check_function}"](*[objects[p] for p in parameters])
+            result = parse(tokens[1:], objects, custom_functions).pop()
             print(result)
-            checks.append((parameters, check_function, result))
             continue
         equal_sign = tokens.index("=")
         rhs = parse(tokens[equal_sign + 1:], objects, custom_functions)
@@ -552,7 +596,7 @@ def from_file(filename):
             objects[variable] = obj
     print(*objects.items(), sep="\n")
     print(*custom_functions.items(), sep="\n")
-    s = asy(objects.values(), checks)
+    s = asy(objects.values())
     with open(f"{filename}.asy", "w+") as file:
         file.write(s)
 
