@@ -7,7 +7,8 @@ def dot(l1, l2):
     return sum([a * b for a, b in zip(l1, l2)])
 
 def roundx(n):
-    return round(n, 2)
+    # return round(n, 2)
+    return n
 
 def parameter_count_of_func(function_name):
     return len(signature(globals()[function_name]).parameters)
@@ -213,7 +214,9 @@ def intersection_lc_1(u, s):
     a = u.a ** 2 + u.b ** 2
     b = 2 * (s.o.y * u.a * u.b - s.o.x * u.b * u.b - u.a * u.c)
     c = (s.o.x ** 2) * (u.b ** 2) + (u.c ** 2) - 2 * s.o.y * u.b * u.c + (s.o.y ** 2) * (u.b ** 2) - (s.r ** 2) * (u.b ** 2)
-    d = (b ** 2 - 4 * a * c).sqrt()
+    e = b ** 2 - 4 * a * c
+    e = 0 if abs(e) < EPSILON else e
+    d = sqrt(e)
     x = (-b + d) / (2 * a)
     y = (u.c - u.a * x) / u.b
     return Point(x, y)
@@ -222,7 +225,9 @@ def intersection_lc_2(u, s):
     a = u.a ** 2 + u.b ** 2
     b = 2 * (s.o.y * u.a * u.b - s.o.x * u.b * u.b - u.a * u.c)
     c = (s.o.x ** 2) * (u.b ** 2) + (u.c ** 2) - 2 * s.o.y * u.b * u.c + (s.o.y ** 2) * (u.b ** 2) - (s.r ** 2) * (u.b ** 2)
-    d = (b ** 2 - 4 * a * c).sqrt()
+    e = b ** 2 - 4 * a * c
+    e = 0 if abs(e) < EPSILON else e
+    d = sqrt(e)
     x = (-b - d) / (2 * a)
     y = (u.c - u.a * x) / u.b
     return Point(x, y)
@@ -541,6 +546,8 @@ def from_file(filename):
         rhs = parse(tokens[equal_sign + 1:], objects, custom_functions)
         lhs = tokens[:equal_sign]
         for variable, obj in zip(lhs, rhs):
+            if variable == ".":
+                continue
             obj.name = variable
             objects[variable] = obj
     print(*objects.items(), sep="\n")
