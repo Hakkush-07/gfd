@@ -12,9 +12,13 @@
 
 \# `<comments>`
 
+? `<check expression>`
+
 #### Explanations
 
 `<expression>`: mix of `<variable>`, `<function>`, uses postfix
+
+`<check expression>`: mix of `<variable>`, `<check function>`, uses postfix
 
 `<function body>`: mix of `$<parameter index>`, `<variable>`, `<function>`, again postfix
 

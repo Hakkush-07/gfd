@@ -1,6 +1,7 @@
 from math import sqrt, pi, atan
 from inspect import signature
 from sys import argv
+from itertools import combinations, permutations
 
 def dot(l1, l2):
     return sum([a * b for a, b in zip(l1, l2)])
@@ -319,12 +320,157 @@ def orthocenter(a, b, c):
 def centroid(a, b, c):
     return Point((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3)
 
+# checks
+
+EPSILON = 1e-5
+
+def is_collinear(a, b, c):
+    return distance_pl(a, line(b, c)) < EPSILON
+
+def is_concyclic(a, b, c, d):
+    return abs(angle(line(a, b), line(a, c)) - angle(line(d, b), line(d, c))) < EPSILON and abs(angle(line(b, a), line(b, c)) - angle(line(d, a), line(d, c))) < EPSILON
+
+def is_concurrent(u, v, w):
+    return abs(u.a * v.c * w.b + u.b * v.a * w.c + u.c * v.b * w.a - u.a * v.b * w.c - u.b * v. c * w.a - u.c * v.a * w.b) < EPSILON
+
+def is_parallel(u, v):
+    return angle(u, v) < EPSILON
+
+def is_perpendicular(u, v):
+    return pi / 2 - angle(u, v) < EPSILON
+
+def is_tangent(s, t):
+    d = distance_pp(s.o, t.o)
+    return abs(d - (s.r + t.r)) < EPSILON or abs(d - abs(s.r - t.r)) < EPSILON
+
+def is_pl(a, u):
+    return distance_pl(a, u) < EPSILON
+
+def is_pc(a, s):
+    return pcr(a, s) == 0
+
+def is_lc(u, s):
+    return lcr(u, s) == 0
+
+def is_equal_length(a, b, c, d):
+    return abs(distance_pp(a, b) - distance_pp(c, d)) < EPSILON
+
+def is_equal_length(a, b, c, d):
+    return abs(distance_pp(a, b) - distance_pp(c, d)) < EPSILON
+
+def different_points(*points):
+    for a, b in combinations(points, 2):
+        if abs(a.x - b.x) < EPSILON and abs(a.y - b.y) < EPSILON:
+            return False
+    return True
+
+def different_lines(*lines):
+    for u, v in combinations(lines, 2):
+        if abs(u.a * v.c - u.c * v.a) < EPSILON and abs(u.b * v.c - u.c * v.b) < EPSILON:
+            return False
+    return True
+
+def different_circles(*circles):
+    for s, t in combinations(circles, 2):
+        if not different_points(s.o, t.o) and abs(s.r - t.r) < EPSILON:
+            return False
+    return True
+
+def not_three_collinear(*points):
+    return not any([is_collinear(a, b, c) for a, b, c in combinations(points, 3)])
+
+def not_two_parallel(*lines):
+    return not any([is_parallel(u, v) for u, v in combinations(lines, 2)])
+
+def not_isosceles_trapezoid_or_parallelogram(a, b, c, d):
+    for aa, bb, cc, dd in permutations((a, b, c, d), 4):
+        if is_parallel(line(aa, bb), line(cc, dd)) and abs(distance_pp(aa, cc) - distance_pp(bb, dd)) < EPSILON:
+            return False
+    return True
+
+def not_deltoid(a, b, c, d):
+    for aa, bb, cc, dd in permutations((a, b, c, d), 4):
+        if is_perpendicular(line(aa, cc), line(bb, dd)) and (abs(distance_pp(aa, bb) - distance_pp(aa, dd)) < EPSILON or abs(distance_pp(bb, aa) - distance_pp(bb, cc))):
+            return False
+    return True
+
+def pcr(a, s):
+    x = distance_pp(s.o, a) - s.r
+    if abs(x) < EPSILON:
+        return 0
+    return -1 if x < 0 else 1
+
+def lcr(u, s):
+    x = distance_pl(s.o, u) - s.r
+    if abs(x) < EPSILON:
+        return 0
+    return -1 if x < 0 else 1
+
+def ccr(s, t):
+    # -2: out inside, -1: on inside, 0: on outside, 1: out outside, 2: in
+    reg = lcr(radical_axis(s, t), s)
+    ins = distance_pp(s.o, t.o) - abs(s.r - t.r) < EPSILON
+    if ins:
+        if reg == 1:
+            return -2
+        elif reg == 0:
+            return -1
+    else:
+        if reg == 1:
+            return 1
+        elif reg == 0:
+            return 0
+        elif reg == -1:
+            return 2
+
+def not_pl(a, u):
+    return not is_pl(a, u)
+
+def out_pc(a, s):
+    return pcr(a, s) == 1
+
+def intersecting_lc(u, s):
+    return lcr(u, s) == -1
+
+def not_through_center(u, s):
+    return not_pl(s.o, u)
+
+def different_radius(*circles):
+    for s, t in combinations(circles, 2):
+        if abs(s.r - t.r) < EPSILON:
+            return False
+    return True
+
+def different_center(*circles):
+    for s, t in combinations(circles, 2):
+        if not different_points(s.o, t.o):
+            return False
+    return True
+
+def nice_circles(s, t):
+    return different_center(s, t) and different_radius(s, t)
+
+def cc_1(s, t):
+    return ccr(s, t) == 2
+
+def cc_2(s, t):
+    return ccr(s, t) == 1
+
+def cc_3(s, t):
+    return ccr(s, t) == 0
+
+def cc_4(s, t):
+    return ccr(s, t) == -1
+
+def not_centers_collinear(s, t, m):
+    return not is_collinear(s.o, t.o, m.o)
+
 extension = "gfd"
 object_name = (f"__obj{str(i).zfill(3)}" for i in range(1000))
 
-def asy(objects):
+def asy(objects, checks):
     with open("templates/template.asy", "r+") as file:
-        return file.read().replace("FIGURE", "\n".join([o.asy() for o in objects]))
+        return file.read().replace("FIGURE", "\n".join([o.asy() for o in objects]) + "\n" + "\n".join([f"// {check_function}({', '.join(parameters)}) = {result}" for parameters, check_function, result in checks]))
 
 def update_stack(stack, token, current_objects, custom_functions):
     if token.endswith("*"):
@@ -365,6 +511,7 @@ def from_file(filename):
         content = file.read().splitlines()[::-1]
     objects = {}
     custom_functions = {}
+    checks = []
     while len(content) > 0:
         line = content.pop()
         if not line:
@@ -383,6 +530,13 @@ def from_file(filename):
             body = tokens[4:]
             custom_functions[function_name] = (parameter_count, body)
             continue
+        if tokens[0] == "?":
+            parameters = tokens[1:-1]
+            check_function = tokens[-1]
+            result = globals()[f"is_{check_function}"](*[objects[p] for p in parameters])
+            print(result)
+            checks.append((parameters, check_function, result))
+            continue
         equal_sign = tokens.index("=")
         rhs = parse(tokens[equal_sign + 1:], objects, custom_functions)
         lhs = tokens[:equal_sign]
@@ -391,7 +545,7 @@ def from_file(filename):
             objects[variable] = obj
     print(*objects.items(), sep="\n")
     print(*custom_functions.items(), sep="\n")
-    s = asy(objects.values())
+    s = asy(objects.values(), checks)
     with open(f"{filename}.asy", "w+") as file:
         file.write(s)
 
