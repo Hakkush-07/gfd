@@ -70,11 +70,11 @@ class Line(Obj):
     
     @property
     def leftmost(self):
-        return min(self.points, key=lambda p: p.x)
+        return min(self.points, key=lambda p: p.x) if self.points else None
     
     @property
     def rightmost(self):
-        return max(self.points, key=lambda p: p.x)
+        return max(self.points, key=lambda p: p.x) if self.points else None
     
     def contains_points(self, points):
         for a in points:
@@ -99,6 +99,8 @@ class Line(Obj):
         return self
     
     def asy(self):
+        if not self.points:
+            return ""
         return f"draw(({roundx(self.leftmost.x)}, {roundx(self.leftmost.y)}) -- ({roundx(self.rightmost.x)}, {roundx(self.rightmost.y)}));"
 
 class Circle(Obj):
@@ -132,6 +134,50 @@ class Circle(Obj):
     
     def asy(self):
         return f"draw(circle(({roundx(self.o.x)}, {roundx(self.o.y)}), {roundx(self.r)}));"
+
+def construction_function(func):
+    def checked_construction_function(*args, **kwargs):
+        result = func(*args, **kwargs)
+        if type(result) == tuple:
+            pass
+        else:
+            combined = list(args) + [result]
+            if type(result) == Point:
+                for obj in combined:
+                    if type(obj) == Point:
+                        pass
+                    elif type(obj) == Line:
+                        if is_pl(result, obj):
+                            result.on_lines([obj])
+                    elif type(obj) == Circle:
+                        if is_pc(result, obj):
+                            result.on_circles([obj])
+            elif type(result) == Line:
+                for obj in combined:
+                    if type(obj) == Point:
+                        if is_pl(obj, result):
+                            result.contains_points([obj])
+                    elif type(obj) == Line:
+                        if is_parallel(result, obj):
+                            result.parallel_to_line(obj)
+                        elif is_perpendicular(result, obj):
+                            result.perpendicular_to_line(obj)
+                    elif type(obj) == Circle:
+                        if is_lc(result, obj):
+                            result.tangent_to_circles([obj])
+            elif type(result) == Circle:
+                for obj in combined:
+                    if type(obj) == Point:
+                        if is_pc(obj, result):
+                            result.contains_points([obj])
+                    elif type(obj) == Line:
+                        if is_lc(obj, result):
+                            result.tangent_to_lines([obj])
+                    elif type(obj) == Circle:
+                        if is_tangent(result, obj):
+                            result.tangent_to_circle(obj)
+        return result
+    return checked_construction_function
 
 def distance(x, y):
     def f(z):
@@ -175,8 +221,9 @@ def distance_pp(a, b):
 def midpoint(a, b):
     return Point((a.x + b.x) / 2, (a.y + b.y) / 2)
 
+@construction_function
 def line(a, b):
-    return Line(b.y - a.y, a.x - b.x, a.x * b.y - a.y * b.x).contains_points([a, b])
+    return Line(b.y - a.y, a.x - b.x, a.x * b.y - a.y * b.x)#.contains_points([a, b])
 
 def perpendicular_bisector(a, b):
     return Line(a.x - b.x, a.y - b.y, (a.x ** 2 + a.y ** 2 - b.x ** 2 - b.y ** 2) / 2)
@@ -201,6 +248,7 @@ def distance_pl(a, u):
 def reflection_pl(a, u):
     return reflection_pp(a, foot(a, u))
 
+@construction_function
 def foot(a, u):
     return intersection_ll(u, perpendicular_line(a, u)).on_lines([u])
 
