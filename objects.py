@@ -1,3 +1,5 @@
+from math import atan, pi
+
 EPSILON = 1e-5
 
 class Obj:
@@ -62,14 +64,64 @@ class Point(Obj):
     def __repr__(self):
         return f"Point {self.name} [{self.id}]"
     
-    def asy_definition(self, properties) -> str:
+    def set_dir(self, properties, objects):
+        """find the empties part around the point to put the label"""
+        occupied_directions = []
+        lines = [pl[1] for pl in properties["point on line"] if self in pl if pl[1] in objects]
+        circles = [pc[1] for pc in properties["point on circle"] if self in pc if pc[1] in objects]
+        for line in lines:
+            u = atan(line.slope)
+            points = [pl[0] for pl in properties["point on line"] if line in pl if pl[0] in objects if pl[0] is not self]
+            if not points:
+                continue
+            lm = min(points, key=lambda p: p.x)
+            rm = max(points, key=lambda p: p.x)
+            if (self.x - lm.x) * (self.x - rm.x) > 0:
+                # not line, but ray, so include only one direction
+                if u > 0:
+                    # positive slope
+                    if self.x - lm.x > 0:
+                        # self is the rightmost
+                        occupied_directions.append(u + pi)
+                    else:
+                        # self is the leftmost
+                        occupied_directions.append(u)
+                else:
+                    # negative slope
+                    if self.x - lm.x > 0:
+                        # self is the rightmost
+                        occupied_directions.append(u + pi)
+                    else:
+                        # self is the leftmost
+                        occupied_directions.append(u + 2 * pi)
+            else:
+                # line, so include both directions
+                occupied_directions.append(u)
+                occupied_directions.append(u + pi)
+        for circle in circles:
+            dx = self.x - circle.o.x
+            dy = self.y - circle.o.y
+            u = atan(dy / dx)
+            occupied_directions.append(u + pi / 2)
+            occupied_directions.append(u - pi / 2)
+        for i, o in enumerate(occupied_directions):
+            occupied_directions[i] = o % (2 * pi)
+        occupied_directions.sort()
+        occupied_directions.append(occupied_directions[0] + 2 * pi)
+        diffs = [j - i for i, j in zip(occupied_directions[:-1], occupied_directions[1:])]
+        max_diff = max(diffs)
+        max_diff_index = diffs.index(max_diff)
+        middle_of_max_diff = (occupied_directions[max_diff_index] + occupied_directions[max_diff_index + 1]) / 2
+        self.direction = middle_of_max_diff * 180 / pi
+    
+    def asy_definition(self) -> str:
         """asy line for defining this point"""
         return f"pair {self.name_wo_special} = ({self.x}, {self.y});"
     
     def asy_draw(self, plc) -> str:
         """asy line for drawing this point"""
         if plc["p"]:
-            return f"dot(\"${self.name}$\", {self.name_wo_special}, dir(90));"
+            return f"dot(\"${self.name}$\", {self.name_wo_special}, dir({self.direction}));"
         else:
             return f"dot({self.name_wo_special});"
         
@@ -112,16 +164,26 @@ class Line(Obj):
     
     def __call__(self, a):
         return self.a * a.x + self.b * a.y - self.c
-    
-    def asy_definition(self, properties) -> str:
-        """asy line for defining this line"""
-        points = [pl[0] for pl in properties["point on line"] if self in pl]
-        if not points:
-            return ""
-        lm = min(points, key=lambda p: p.x)  # leftmost point on the line
-        rm = max(points, key=lambda p: p.x)  # rightmost point on the line
 
-        return f"path {self.name_wo_special} = ({lm.x}, {lm.y}) -- ({rm.x}, {rm.y});"
+    @property    
+    def slope(self):
+        return -self.a / self.b
+    
+    def set_lm_rm(self, properties):
+        """based on the properties, find the leftmost and rightmost points on the line, used for drawing in asy"""
+        points = [pl[0] for pl in properties["point on line"] if self in pl]
+        self.lmrm = False
+        if not points:
+            return
+        self.lmrm = True
+        self.lm = min(points, key=lambda p: p.x)  # leftmost point on the line
+        self.rm = max(points, key=lambda p: p.x)  # rightmost point on the line
+    
+    def asy_definition(self) -> str:
+        """asy line for defining this line"""
+        if not self.lmrm:
+            return ""
+        return f"path {self.name_wo_special} = ({self.lm.x}, {self.lm.y}) -- ({self.rm.x}, {self.rm.y});"
     
     def asy_draw(self, plc) -> str:
         """asy line for drawing this line"""
@@ -162,7 +224,7 @@ class Circle(Obj):
     def __repr__(self):
         return f"Circle {self.name} [{self.id}]"
     
-    def asy_definition(self, properties) -> str:
+    def asy_definition(self) -> str:
         """asy line for defining this circle"""
         return f"path {self.name_wo_special} = circle(({self.o.x}, {self.o.y}), {self.r});"
     

@@ -199,7 +199,12 @@ class Figure:
         # plc denotes if the objects should be labeled
         plc = {"p": True, "l": False, "c": False}
         sorted_objects = sorted(self.objects.values(), key=lambda obj: obj.criteria())
-        definitions = "\n".join([obj.asy_definition(properties) for obj in sorted_objects])
+        for obj in sorted_objects:
+            if obj.order == 0:
+                obj.set_dir(properties, sorted_objects)
+            if obj.order == 1:
+                obj.set_lm_rm(properties)
+        definitions = "\n".join([obj.asy_definition() for obj in sorted_objects])
         draws = "\n".join([obj.asy_draw(plc) for obj in sorted_objects])
         with open("templates/template.asy", "r+") as file:
             template = file.read().replace("FIGURE", definitions + "\n\n" + draws)
