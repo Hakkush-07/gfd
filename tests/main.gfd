@@ -1,8 +1,6 @@
 A B C = triangle
 s = A B C circumcircle
-D = C B reflection_pp
-E = B D midpoint
-\Gamma = D E circle_centered
-u = s \Gamma radical_axis
-X = u B C line intersection_ll
-Y = u A B C line parallel_line intersection_ll
+O = A B C circumcenter
+t = O A circle_centered
+u = A O line
+P = A A O line t second_intersection_plc

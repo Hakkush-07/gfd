@@ -1,3 +1,5 @@
+EPSILON = 1e-5
+
 class Obj:
     """
     base class for the objects in the figure
@@ -36,12 +38,26 @@ class Point(Obj):
 
     x, y: float
         x and y coordinates of the point
+    
+    points: list[Point]
+        points created so far, if the same point is created again just return the already existing one
     """
 
+    points = []
+    def __new__(cls, x, y):
+        for point in cls.points:
+            if abs(x - point.x) < EPSILON and abs(y - point.y) < EPSILON:
+                return point
+        return super().__new__(cls)
+
     def __init__(self, x, y):
+        for point in Point.points:
+            if abs(x - point.x) < EPSILON and abs(y - point.y) < EPSILON:
+                return
         super().__init__(0)
         self.x = x
         self.y = y
+        Point.points.append(self)
     
     def __repr__(self):
         return f"Point {self.name} [{self.id}]"
@@ -53,9 +69,9 @@ class Point(Obj):
     def asy_draw(self, plc) -> str:
         """asy line for drawing this point"""
         if plc["p"]:
-            return f"dot('${self.name_wo_special}$', {self.name}, dir(90));"
+            return f"dot(\"${self.name}$\", {self.name_wo_special}, dir(90));"
         else:
-            return f"dot({self.name});"
+            return f"dot({self.name_wo_special});"
         
 class Line(Obj):
     """
@@ -63,13 +79,33 @@ class Line(Obj):
 
     a, b, c: float
         coefficients of the line equation ax+by=c
+
+    lines: list[Line]
+        lines created so far, if the same line is created again just return the already existing one
     """
 
+    lines = []
+    def __new__(cls, a, b, c):
+        for line in cls.lines:
+            ka = line.a / a
+            kb = line.b / b
+            kc = line.c / c
+            if abs(ka - kb) < EPSILON and abs(ka - kc) < EPSILON:
+                return line
+        return super().__new__(cls)
+
     def __init__(self, a, b, c):
+        for line in Line.lines:
+            ka = line.a / a
+            kb = line.b / b
+            kc = line.c / c
+            if abs(ka - kb) < EPSILON and abs(ka - kc) < EPSILON:
+                return
         super().__init__(1)
         self.a = a
         self.b = b
         self.c = c
+        Line.lines.append(self)
     
     def __repr__(self):
         return f"Line {self.name} [{self.id}]"
@@ -90,7 +126,7 @@ class Line(Obj):
     def asy_draw(self, plc) -> str:
         """asy line for drawing this line"""
         if plc["l"]:
-            return f"draw({self.name_wo_special}, L=Label('${self.name}$'));"
+            return f"draw({self.name_wo_special}, L=Label(\"${self.name}$\"));"
         else:
             return f"draw({self.name_wo_special});"
 
@@ -102,11 +138,26 @@ class Circle(Obj):
         center of the circle
     r: float
         radius of the circle
+    
+    circles: list[Circle]
+        circles created so far, if the same circle is created again just return the already existing one
     """
+
+    circles = []
+    def __new__(cls, o, r):
+        for circle in cls.circles:
+            if abs(circle.o.x - o.x) < EPSILON and abs(circle.o.y - o.y) < EPSILON and abs(circle.r - r) < EPSILON:
+                return circle
+        return super().__new__(cls)
+
     def __init__(self, o, r):
+        for circle in Circle.circles:
+            if abs(circle.o.x - o.x) < EPSILON and abs(circle.o.y - o.y) < EPSILON and abs(circle.r - r) < EPSILON:
+                return
         super().__init__(2)
         self.o = o
         self.r = r
+        Circle.circles.append(self)
 
     def __repr__(self):
         return f"Circle {self.name} [{self.id}]"
@@ -118,7 +169,7 @@ class Circle(Obj):
     def asy_draw(self, plc) -> str:
         """asy line for drawing this circle"""
         if plc["c"]:
-            return f"draw({self.name_wo_special}, L=Label('${self.name}$'));"
+            return f"draw({self.name_wo_special}, L=Label(\"${self.name}$\"));"
         else:
             return f"draw({self.name_wo_special});"
 
