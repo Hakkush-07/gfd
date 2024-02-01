@@ -1,0 +1,14 @@
+A B C = triangle
+u = B C line
+v = A C line
+w = A B line
+
+J = A B C incenter
+M = J u foot
+K = J w foot
+L = J v foot
+> 2 intersection_xM_xJ = $1 M line* $2 J line* intersection_ll
+F = L B intersection_xM_xJ
+G = K C intersection_xM_xJ
+S = A F line* u intersection_ll
+T = A G line* u intersection_ll

@@ -31,7 +31,7 @@ properties = {
     "concurrent lines": concurrent,
 }
 
-# dict<function_name: str, function: ConstructionFunction> imported from main.py
+# dict[str, ConstructionFunction], name -> function, imported from main.py
 construction_functions = {}
 
 check_functions = {}
@@ -143,7 +143,8 @@ def check_function(s):
 EPSILON = 1e-5
 
 # helper function
-def solve_quadratic(a, b, c):
+def solve_quadratic(a, b, c) -> tuple[bool, int, float, float]:
+    """returns (solution exists or not, number of different solutions, solution1, solution2)"""
     d = b * b - 4 * a  *c
     if abs(d) < EPSILON:
         return True, 1, -b / 2 * a, -b / 2 * a
@@ -153,23 +154,23 @@ def solve_quadratic(a, b, c):
 
 # calculation functions
 
-def distance_pp(a, b):
+def distance_pp(a, b) -> float:
     return sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2)
 
-def distance_pl(a, u):
+def distance_pl(a, u) -> float:
     return abs(u(a)) / sqrt(u.a ** 2 + u.b ** 2)
 
-def distance_pc(a, s):
+def distance_pc(a, s) -> float:
     return abs(s.r - distance_pp(s.o, a))
 
-def distance_lc(u, s):
+def distance_lc(u, s) -> float:
     return abs(s.r - distance_pl(s.o, u))
 
-def angle(u, v):
+def angle(u, v) -> float:
     x = u.a * v.a + u.b * v.b
     return abs(atan((v.a * u.b - u.a * v.b) / x)) if x else pi / 2
 
-def pc(a, s):
+def pc(a, s) -> int:
     """
     1  if a is outside of s
     0  if a is on s
@@ -182,7 +183,7 @@ def pc(a, s):
         return 1
     return -1
 
-def lc(u, s):
+def lc(u, s) -> int:
     """
     1  if l doesnt intersect s
     0  if l is tangent to s
@@ -195,7 +196,7 @@ def lc(u, s):
         return 1
     return -1
 
-def cc(s, t):
+def cc(s, t) -> int:
     """
     1  if s and t dont intersect
     0  if s and t are tangent
@@ -215,7 +216,7 @@ def cc(s, t):
 ## no arguments
 
 @construction_function()
-def triangle():
+def triangle() -> tuple[Point, Point, Point]:
     """predefined triangle"""
     a = Point(-0.256, 0.966)
     b = Point(-0.905, -0.426)
@@ -223,25 +224,25 @@ def triangle():
     return a, b, c
 
 @construction_function()
-def unit_circle():
+def unit_circle() -> Circle:
     """unit circle"""
     return Circle(Point(0, 0), 1)
 
 ## random
 
 @construction_function(cache=0)
-def random_point_on_circle(s):
+def random_point_on_circle(s) -> Point:
     """random point on circle"""
     t = random() * 2 * pi
     return Point(s.o.x + s.r * cos(t), s.o.y + s.r * sin(t))
 
 @construction_function(cache=0)
-def random_point_on_unit_circle():
+def random_point_on_unit_circle() -> Point:
     """random point on unit circle"""
     return random_point_on_circle(unit_circle())
 
 @construction_function(cache=0)
-def random_point_on_segment(a, b):
+def random_point_on_segment(a, b) -> Point:
     """random point on the line segment ab"""
     t = random()
     return Point(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t)
@@ -257,22 +258,22 @@ def random_point_on_arc2(s, a, b):
     pass
 
 @construction_function(cache=0)
-def random_point():
+def random_point() -> Point:
     """random point on unit circle"""
     return random_point_on_unit_circle()
 
 @construction_function(cache=0)
-def random_line():
+def random_line() -> Line:
     """random line passing through two random points on the unit circle"""
     return line(random_point(), random_point())
 
 @construction_function(cache=0)
-def random_circle():
+def random_circle() -> Circle:
     """random circle whose center is on the unit circle and has a radius between 0 and 1"""
     return Circle(random_point(), random())
 
 @construction_function(cache=0)
-def random_triangle_on_circle(s):
+def random_triangle_on_circle(s) -> tuple[Point, Point, Point]:
     """random triangle on circle s"""
     a = random_point_on_circle(s)
     b = random_point_on_circle(s)
@@ -280,12 +281,12 @@ def random_triangle_on_circle(s):
     return a, b, c
 
 @construction_function(cache=0)
-def random_triangle_on_unit_circle():
+def random_triangle_on_unit_circle() -> tuple[Point, Point, Point]:
     """random triangle on unit circle"""
     return random_triangle_on_circle(unit_circle())
 
 @construction_function(cache=0)
-def random_nice_triangle():
+def random_nice_triangle() -> tuple[Point, Point, Point]:
     """random nice triangle, angles close to 60, 45, 75"""
     x = 5
     a = random_point_on_arc(unit_circle(), 120 - x, 120 + x, radian=False)
@@ -293,96 +294,101 @@ def random_nice_triangle():
     c = random_point_on_arc(unit_circle(), 330 - x, 330 + x, radian=False)
     return a, b, c
 
+@construction_function(cache=0)
+def random_line_through_point(a):
+    b = random_point_on_circle(Circle(a, 1))
+    return line(a, b)
+
 ## c
 
 @construction_function()
-def center(s):
+def center(s) -> Point:
     """center of s"""
     return s.o
 
 ## pp
 
 @construction_function()
-def midpoint(a, b):
+def midpoint(a, b) -> Point:
     """midpoint of ab"""
     return Point((a.x + b.x) / 2, (a.y + b.y) / 2)
 
 @construction_function()
-def line(a, b):
+def line(a, b) -> Line:
     """line ab"""
     return Line(b.y - a.y, a.x - b.x, a.x * b.y - a.y * b.x)
 
 @construction_function()
-def perpendicular_bisector(a, b):
+def perpendicular_bisector(a, b) -> Line:
     """perpendicular bisector of ab"""
     return Line(a.x - b.x, a.y - b.y, (a.x ** 2 + a.y ** 2 - b.x ** 2 - b.y ** 2) / 2)
 
 @construction_function()
-def circle_diameter(a, b):
+def circle_diameter(a, b) -> Circle:
     """circle with diameter ab"""
     return Circle(midpoint(a, b), distance_pp(a, b) / 2)
 
 @construction_function()
-def reflection_pp(a, b):
+def reflection_pp(a, b) -> Point:
     """reflection of a over b"""
     return Point(2 * b.x - a.x, 2 * b.y - a.y)
 
 @construction_function()
-def perpendicular_through(a, b):
+def perpendicular_through(a, b) -> Line:
     """line through a perpendicular to ab"""
     return Line(a.x - b.x, a.y - b.y, a.x ** 2 + a.y ** 2 - a.x * b.x - a.y * b.y)
 
 @construction_function()
-def circle_centered(a, b):
+def circle_centered(a, b) -> Circle:
     """circle centered a through b"""
     return Circle(a, distance_pp(a, b))
 
 ## pl
 
 @construction_function()
-def reflection_pl(a, u):
+def reflection_pl(a, u) -> Point:
     """reflection of a over u"""
     return reflection_pp(a, foot(a, u))
 
 @construction_function()
-def foot(a, u):
+def foot(a, u) -> Point:
     """foot of a on u"""
     return intersection_ll(u, perpendicular_line(a, u))
 
 @construction_function()
-def perpendicular_line(a, u):
+def perpendicular_line(a, u) -> Line:
     """line through a perpendicular to u"""
     return Line(u.b, -u.a, a.x * u.b - a.y * u.a)
 
 @construction_function()
-def parallel_line(a, u):
+def parallel_line(a, u) -> Line:
     """line through a parallel to u"""
     return Line(u.a, u.b, a.x * u.a + a.y * u.b)
 
 ## pc
 
 @construction_function()
-def tangent_points(a, s):
+def tangent_points(a, s) -> tuple[Point, Point]:
     """touch points of tangents from a to s, requires a to be outside of s"""
     if pc(a, s) != 1:
         raise FigureException(f"Point {a.name} is not outside of circle {s.name} in construction function tangent_points")
     return intersections_cc(s, circle_diameter(a, s.o))
 
 @construction_function()
-def tangent_lines(a, s):
+def tangent_lines(a, s) -> tuple[Line, Line]:
     """tangent lines from a to s, requires a to be outside of s"""
     tp1, tp2 = tangent_points(a, s)
     return line(a, tp1), line(a, tp2)
 
 @construction_function()
-def tangent_line(a, s):
+def tangent_line(a, s) -> Line:
     """line through a tangent to s, requires a to be on s"""
     if pc(a, s) != 0:
         raise FigureException(f"Point {a.name} is not on circle {s.name} in construction function tangent_lines")
     return perpendicular_through(a, s.o)
 
 @construction_function()
-def polar(a, s):
+def polar(a, s) -> Line:
     """polar line of a wrt s, requires a to not be center of s"""
     if distance_pp(a, s.o) < EPSILON:
         raise FigureException(f"Point {a.name} is the center of circle {s.name} in construction function polar")
@@ -393,19 +399,19 @@ def polar(a, s):
 ## ll
 
 @construction_function()
-def intersection_ll(u, v):
+def intersection_ll(u, v) -> Point:
     """intersection of u and v, requires u and v to not be parallel"""
     if is_parallel(u, v):
         raise FigureException(f"Line {u.name} and {v.name} are parallel in construction function intersection_ll")
     return Point((u.c * v.b - u.b * v.c) / (u.a * v.b - u.b * v.a), (u.c * v.a - u.a * v.c) / (u.b * v.a - u.a * v.b))
 
 @construction_function()
-def angle_bisector(u, v):
+def angle_bisector(u, v) -> Line:
     """angle bisector of u and v, considers orientation"""
     return Line(u.a / sqrt(u.a ** 2 + u.b ** 2) + v.a / sqrt(v.a ** 2 + v.b ** 2), u.b / sqrt(u.a ** 2 + u.b ** 2) + v.b / sqrt(v.a ** 2 + v.b ** 2), u.c / sqrt(u.a ** 2 + u.b ** 2) + v.c / sqrt(v.a ** 2 + v.b ** 2))
 
 @construction_function()
-def reflection_ll(u, v):
+def reflection_ll(u, v) -> Line:
     """reflection of u over v, requires u and v to not be parallel"""
     i = intersection_ll(u, v)
     x, y = i.x, i.y
@@ -416,7 +422,7 @@ def reflection_ll(u, v):
 ## lc
 
 @construction_function()
-def intersections_lc(u, s):
+def intersections_lc(u, s) -> tuple[Point, Point]:
     """intersection points of u and s, requires u and s to intersect"""
     if lc(u, s) != -1:
         raise FigureException(f"Line {u.name} does not intersect Circle {s.name} in construction function intersections_lc")
@@ -429,21 +435,21 @@ def intersections_lc(u, s):
     return Point(x1, y1), Point(x2, y2)
 
 @construction_function()
-def intersection_lc(u, s):
+def intersection_lc(u, s) -> Point:
     """tangent point of u and s, requires u and s to be tangent"""
     if lc(u, s) != 0:
         raise FigureException(f"Line {u.name} is not tangent circle {s.name} in construction function tangent_points")
     return foot(s.o, u)
 
 @construction_function()
-def tangent_point(u, s):
+def tangent_point(u, s) -> Point:
     """tangent point of u and s, requires u and s to be tangent"""
     if lc(u, s) != 0:
         raise FigureException(f"Line {u.name} is not tangent circle {s.name} in construction function tangent_points")
     return foot(s.o, u)
 
 @construction_function()
-def pole(u, s):
+def pole(u, s) -> Point:
     """pole point of u wrt s, requires u to not pas through center of s"""
     if distance_pl(s.o, u) < EPSILON:
         raise FigureException(f"Line {u.name} passes through the center of circle {s.name} in construction function pole")
@@ -454,183 +460,180 @@ def pole(u, s):
 ## cc
 
 @construction_function()
-def intersections_cc(s, t):
+def intersections_cc(s, t) -> tuple[Point, Point]:
     """intersection points of s and t, requires s and t to intersect"""
     if cc(s, t) != -1:
         raise FigureException(f"Circle {s.name} and {t.name} do not intersect in construction function intersections_cc")
     return intersections_lc(radical_axis(s, t), s)
 
 @construction_function()
-def intersection_cc(s, t):
+def intersection_cc(s, t) -> Point:
     """tangent point of s and t, requires s and t to be tangent"""
     if cc(s, t) != 0:
         raise FigureException(f"Circle {s.name} and {t.name} are not tangent in construction function intersection_cc")
     return intersection_ll(line(s.o, t.o), radical_axis(s, t))
 
 @construction_function()
-def radical_axis(s, t):
+def radical_axis(s, t) -> Line:
     """radical axis of s and t"""
     return Line(2 * (s.o.x - t.o.x), 2 * (s.o.y - t.o.y), t.r ** 2 - s.r ** 2 + s.o.x ** 2 - t.o.x ** 2 + s.o.y ** 2 - t.o.y ** 2)
 
 @construction_function()
-def tangent_points_external(s, t):
+def tangent_points_external(s, t) -> tuple[Point, Point, Point, Point]:
     """external tangent points of s and t, requires ..."""
     p1, p2 = tangent_points(tangent_intersection_external(s, t), s)
     p3, p4 = tangent_points(tangent_intersection_external(s, t), t)
     return p1, p2, p3, p4
 
 @construction_function()
-def tangent_points_internal(s, t):
+def tangent_points_internal(s, t) -> tuple[Point, Point, Point, Point]:
     """internal tangent points of s and t, requires ..."""
     p1, p2 = tangent_points(tangent_intersection_internal(s, t), s)
     p3, p4 = tangent_points(tangent_intersection_internal(s, t), t)
     return p1, p2, p3, p4
 
 @construction_function()
-def tangent_intersection_external(s, t):
+def tangent_intersection_external(s, t) -> Point:
     """intersection of external tangents of s and t, requires ..."""
     return Point((s.o.x * t.r - t.o.x * s.r) / (t.r - s.r), (s.o.y * t.r - t.o.y * s.r) / (t.r - s.r))
 
 @construction_function()
-def tangent_intersection_internal(s, t):
+def tangent_intersection_internal(s, t) -> Point:
     """intersection of internal tangents of s and t, requires ..."""
     return Point((s.o.x * t.r + t.o.x * s.r) / (t.r + s.r), (s.o.y * t.r + t.o.y * s.r) / (t.r + s.r))
 
 @construction_function()
-def tangent_lines_external(s, t):
+def tangent_lines_external(s, t) -> tuple[Line, Line]:
     """external tangents of s and t, requires ..."""
     return tangent_lines(tangent_intersection_external(s, t), s)
 
 @construction_function()
-def tangent_lines_internal(s, t):
+def tangent_lines_internal(s, t) -> tuple[Line, Line]:
     """internal tangents of s and t, requires ..."""
     return tangent_lines(tangent_intersection_internal(s, t), s)
 
 ## ppp
 
 @construction_function()
-def internal_angle_bisector(a, b, c):
+def internal_angle_bisector(a, b, c) -> Line:
     """internal angle bisector of angle bac"""
-    return angle_bisector(line(a, b), line(c, a))
-
-@construction_function()
-def external_angle_bisector(a, b, c):
-    """external angle bisector of angle bac"""
     return angle_bisector(line(a, b), line(a, c))
 
 @construction_function()
-def altitude(a, b, c):
+def external_angle_bisector(a, b, c) -> Line:
+    """external angle bisector of angle bac"""
+    return angle_bisector(line(a, b), line(c, a))
+
+@construction_function()
+def altitude(a, b, c) -> Line:
     """altitude from a to bc"""
     return perpendicular_line(a, line(b, c))
 
 @construction_function()
-def median(a, b, c):
+def median(a, b, c) -> Line:
     """median from a to bc"""
     return line(a, midpoint(b, c))
 
 @construction_function()
-def foot_ppp(a, b, c):
+def foot_ppp(a, b, c) -> Point:
     """foot from a to bc"""
     return foot(a, line(b, c))
 
 @construction_function()
-def circumcenter(a, b, c):
+def circumcenter(a, b, c) -> Point:
     """circumcenter of abc"""
     return intersection_ll(perpendicular_bisector(a, b), perpendicular_bisector(a, c))
 
-@construction_function()
-def circumradius(a, b, c):
+def circumradius(a, b, c) -> float:
     """circumradius of abc"""
     return distance_pp(a, circumcenter(a, b, c))
 
 @construction_function()
-def circumcircle(a, b, c):
+def circumcircle(a, b, c) -> Circle:
     """circumcircle of abc"""
     return Circle(circumcenter(a, b, c), circumradius(a, b, c))
 
 @construction_function()
-def incenter(a, b, c):
+def incenter(a, b, c) -> Point:
     """incenter of abc"""
     return intersection_ll(internal_angle_bisector(b, c, a), internal_angle_bisector(c, a, b))
 
-@construction_function()
-def inradius(a, b, c):
+def inradius(a, b, c) -> float:
     """inradius of abc"""
     return distance_pl(incenter(a, b, c), line(b, c))
 
 @construction_function()
-def incircle(a, b, c):
+def incircle(a, b, c) -> Circle:
     """incircle of abc"""
     return Circle(incenter(a, b, c), inradius(a, b, c))
 
 @construction_function()
-def excenter(a, b, c):
+def excenter(a, b, c) -> Point:
     """a-excenter of abc"""
     return intersection_ll(external_angle_bisector(b, c, a), external_angle_bisector(c, a, b))
 
-@construction_function()
-def exradius(a, b, c):
+def exradius(a, b, c) -> float:
     """a-exradius of abc"""
     return distance_pl(excenter(a, b, c), line(b, c))
 
 @construction_function()
-def excircle(a, b, c):
+def excircle(a, b, c) -> Circle:
     """a-excircle of abc"""
     return Circle(excenter(a, b, c), exradius(a, b, c))
 
 @construction_function()
-def orthocenter(a, b, c):
+def orthocenter(a, b, c) -> Point:
     """orthocenter of abc"""
     return intersection_ll(altitude(b, c, a), altitude(c, a, b))
 
 @construction_function()
-def centroid(a, b, c):
+def centroid(a, b, c) -> Point:
     """centroid of abc"""
     return Point((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3)
 
 # check functions
 
 @check_function(collinear)
-def is_collinear(a, b, c):
+def is_collinear(a, b, c) -> bool:
     """a, b, c are collinear"""
     return distance_pl(a, line(b, c)) < EPSILON
 
 @check_function(concyclic)
-def is_concyclic(a, b, c, d):
+def is_concyclic(a, b, c, d) -> bool:
     """a, b, c, d are concyclic"""
     return abs(angle(line(a, b), line(a, c)) - angle(line(d, b), line(d, c))) < EPSILON and abs(angle(line(b, a), line(b, c)) - angle(line(d, a), line(d, c))) < EPSILON
 
 @check_function(concurrent)
-def is_concurrent(u, v, w):
+def is_concurrent(u, v, w) -> bool:
     """u, v, w are concurrent"""
     return abs(u.a * v.c * w.b + u.b * v.a * w.c + u.c * v.b * w.a - u.a * v.b * w.c - u.b * v. c * w.a - u.c * v.a * w.b) < EPSILON
 
 @check_function(line_parallel)
-def is_parallel(u, v):
+def is_parallel(u, v) -> bool:
     """u and v are parallel"""
     return angle(u, v) < EPSILON
 
 @check_function(line_perpendicular)
-def is_perpendicular(u, v):
+def is_perpendicular(u, v) -> bool:
     """u and v are perpendicular"""
     return pi / 2 - angle(u, v) < EPSILON
 
 @check_function(circle_tangent_to_circle)
-def is_tangent(s, t):
+def is_tangent(s, t) -> bool:
     """s and t are tangent"""
     return abs(distance_pc(s.o, t) - s.r) < EPSILON
 
 @check_function(point_on_line)
-def is_pl(a, u):
+def is_pl(a, u) -> bool:
     """a is on u"""
     return distance_pl(a, u) < EPSILON
 
 @check_function(point_on_circle)
-def is_pc(a, s):
+def is_pc(a, s) -> bool:
     """a is on s"""
     return distance_pc(a, s) < EPSILON
 
 @check_function(line_tangent_to_circle)
-def is_lc(u, s):
+def is_lc(u, s) -> bool:
     """u is tangent to s"""
     return abs(distance_pl(s.o, u) - s.r) < EPSILON
