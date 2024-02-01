@@ -112,6 +112,7 @@ class Point(Obj):
         max_diff = max(diffs)
         max_diff_index = diffs.index(max_diff)
         middle_of_max_diff = (occupied_directions[max_diff_index] + occupied_directions[max_diff_index + 1]) / 2
+        middle_of_max_diff %= 2 * pi
         self.direction = middle_of_max_diff * 180 / pi
     
     def asy_definition(self) -> str:
