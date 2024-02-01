@@ -17,7 +17,11 @@ class Obj:
         self.order = asy_order
         self.id = Obj.count
         Obj.count += 1
-        self.name = f"__obj{str(self.id).zfill(3)}"
+        self.name = f"o_{{{str(self.id).zfill(3)}}}"
+
+    @property
+    def name_wo_special(self):
+        return self.name.replace("\\", "").replace("{", "").replace("}", "")
     
     def __hash__(self):
         return hash(self.id)
@@ -44,11 +48,14 @@ class Point(Obj):
     
     def asy_definition(self, properties) -> str:
         """asy line for defining this point"""
-        return f"pair {self.name} = ({self.x}, {self.y});"
+        return f"pair {self.name_wo_special} = ({self.x}, {self.y});"
     
-    def asy_draw(self) -> str:
+    def asy_draw(self, plc) -> str:
         """asy line for drawing this point"""
-        return f"dot('${self.name}$', {self.name}, dir(90));"
+        if plc["p"]:
+            return f"dot('${self.name_wo_special}$', {self.name}, dir(90));"
+        else:
+            return f"dot({self.name});"
         
 class Line(Obj):
     """
@@ -78,11 +85,14 @@ class Line(Obj):
         lm = min(points, key=lambda p: p.x)  # leftmost point on the line
         rm = max(points, key=lambda p: p.x)  # rightmost point on the line
 
-        return f"path {self.name} = ({lm.x}, {lm.y}) -- ({rm.x}, {rm.y});"
+        return f"path {self.name_wo_special} = ({lm.x}, {lm.y}) -- ({rm.x}, {rm.y});"
     
-    def asy_draw(self) -> str:
+    def asy_draw(self, plc) -> str:
         """asy line for drawing this line"""
-        return f"draw({self.name});"
+        if plc["l"]:
+            return f"draw({self.name_wo_special}, L=Label('${self.name}$'));"
+        else:
+            return f"draw({self.name_wo_special});"
 
 class Circle(Obj):
     """
@@ -103,9 +113,12 @@ class Circle(Obj):
     
     def asy_definition(self, properties) -> str:
         """asy line for defining this circle"""
-        return f"path {self.name} = circle(({self.o.x}, {self.o.y}), {self.r});"
+        return f"path {self.name_wo_special} = circle(({self.o.x}, {self.o.y}), {self.r});"
     
-    def asy_draw(self) -> str:
+    def asy_draw(self, plc) -> str:
         """asy line for drawing this circle"""
-        return f"draw({self.name});"
+        if plc["c"]:
+            return f"draw({self.name_wo_special}, L=Label('${self.name}$'));"
+        else:
+            return f"draw({self.name_wo_special});"
 

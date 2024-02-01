@@ -33,7 +33,7 @@ class Figure:
     def interpret_file(self, filename):
         """interprets a gfd file"""
         if filename in map(lambda x: x[0], self.line_counters):
-            raise GFDException("circular import is not allowed", *self.line_counters[-1]) # TODO: fix
+            raise GFDException("circular import is not allowed", *self.line_counters[-1])
         self.line_counters.append([filename, 0])
 
         with open(filename, "r+") as file:
@@ -87,7 +87,6 @@ class Figure:
             raise GFDException("first token in function line should be the parameter count", *self.line_counters[-1])
         function_name = tokens[1]
         function_body = tokens[3:]
-        # TODO allow or dont allow stdlib functions overriding?
         self.custom_functions[function_name] = (parameter_count, function_body)
 
     def interpret_construction(self, tokens):
@@ -161,6 +160,7 @@ class Figure:
                     self.objects[obj.name] = obj
 
             stack.extend(result_lst)
+
         elif token in check_functions.keys():
             check_function = check_functions[token]
 
@@ -181,6 +181,7 @@ class Figure:
                 raise GFDException(f"non bool return for check function {check_function.name}", *self.line_counters[-1])
             
             stack.append(result)
+
         elif token in self.custom_functions.keys():
             parameter_count, function_body = self.custom_functions[token]
             parameters = [stack.pop().name for _ in range(parameter_count)][::-1]
@@ -195,9 +196,11 @@ class Figure:
 
     def asy(self) -> str:
         """asy string of the figure"""
+        # plc denotes if the objects should be labeled
+        plc = {"p": True, "l": False, "c": False}
         sorted_objects = sorted(self.objects.values(), key=lambda obj: obj.criteria())
         definitions = "\n".join([obj.asy_definition(properties) for obj in sorted_objects])
-        draws = "\n".join([obj.asy_draw() for obj in sorted_objects])
+        draws = "\n".join([obj.asy_draw(plc) for obj in sorted_objects])
         with open("templates/template.asy", "r+") as file:
             template = file.read().replace("FIGURE", definitions + "\n\n" + draws)
         return template
@@ -208,7 +211,7 @@ class Figure:
         for name, prop in properties.items():
             t = f"{name}\n"
             for objs in prop:
-                if any([obj.name.startswith("__") for obj in objs]):
+                if any([obj not in self.objects.values() for obj in objs]):
                     continue
                 t += f"    {', '.join(map(str, objs))}\n"
             t += "\n"

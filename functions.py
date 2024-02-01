@@ -211,6 +211,34 @@ def cc(s, t) -> int:
         return 1
     return -1
 
+def random_point_on_arc_angle(s, angle1, angle2, radian=True):
+    """random point on circle s between angles a1 and a2"""
+    k = 1 if radian else pi / 180
+    angle1 = (angle1 * k) % (2 * pi)
+    angle2 = (angle2 * k) % (2 * pi)
+    if angle2 < angle1:
+        angle2 = angle2 + 2 * pi
+    t = angle1 + random() * (angle2 - angle1)
+    return Point(s.o.x + s.r * cos(t), s.o.y + s.r * sin(t))
+
+def angle_ps(s, a):
+    """angle of a wrt s, requires a to be on s"""
+    if not is_pc(a, s):
+        raise FigureException(f"Point {a.name} is not on circle {s.name} in angle_ps")
+    dx = a.x - s.o.x
+    dy = a.y - s.o.y
+    u = atan(dy / dx)
+    if dx > 0:
+        if dy > 0:
+            return u
+        else:
+            return 2 * pi + u
+    else:
+        if dy > 0:
+            return pi + u
+        else:
+            return pi + u
+
 # construction functions
 
 ## no arguments
@@ -247,15 +275,12 @@ def random_point_on_segment(a, b) -> Point:
     t = random()
     return Point(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t)
 
-def random_point_on_arc(s, angle1, angle2, radian=True):
-    t = angle1 + random() * (angle2 - angle1)
-    t = t if radian else t * pi / 180
-    return Point(s.o.x + s.r * cos(t), s.o.y + s.r * sin(t))
-
 @construction_function(cache=0)
-def random_point_on_arc2(s, a, b):
+def random_point_on_arc(s, a, b):
     """random point on the arc ab of circle s, requires a and b to be on s"""
-    pass
+    if not is_pc(a, s) or not is_pc(b, s):
+        raise FigureException(f"Points {a.name} or {b.name} is not on circle {s.name} in construction function random_point_on_arc")
+    return random_point_on_arc_angle(s, angle_ps(a, s), angle_ps(b, s))
 
 @construction_function(cache=0)
 def random_point() -> Point:
@@ -289,9 +314,9 @@ def random_triangle_on_unit_circle() -> tuple[Point, Point, Point]:
 def random_nice_triangle() -> tuple[Point, Point, Point]:
     """random nice triangle, angles close to 60, 45, 75"""
     x = 5
-    a = random_point_on_arc(unit_circle(), 120 - x, 120 + x, radian=False)
-    b = random_point_on_arc(unit_circle(), 210 - x, 210 + x, radian=False)
-    c = random_point_on_arc(unit_circle(), 330 - x, 330 + x, radian=False)
+    a = random_point_on_arc_angle(unit_circle(), 120 - x, 120 + x, radian=False)
+    b = random_point_on_arc_angle(unit_circle(), 210 - x, 210 + x, radian=False)
+    c = random_point_on_arc_angle(unit_circle(), 330 - x, 330 + x, radian=False)
     return a, b, c
 
 @construction_function(cache=0)
@@ -383,7 +408,7 @@ def tangent_lines(a, s) -> tuple[Line, Line]:
 @construction_function()
 def tangent_line(a, s) -> Line:
     """line through a tangent to s, requires a to be on s"""
-    if pc(a, s) != 0:
+    if not is_pc(a, s):
         raise FigureException(f"Point {a.name} is not on circle {s.name} in construction function tangent_lines")
     return perpendicular_through(a, s.o)
 
@@ -437,21 +462,21 @@ def intersections_lc(u, s) -> tuple[Point, Point]:
 @construction_function()
 def intersection_lc(u, s) -> Point:
     """tangent point of u and s, requires u and s to be tangent"""
-    if lc(u, s) != 0:
-        raise FigureException(f"Line {u.name} is not tangent circle {s.name} in construction function tangent_points")
+    if not is_lc(u, s):
+        raise FigureException(f"Line {u.name} is not tangent to circle {s.name} in construction function tangent_points")
     return foot(s.o, u)
 
 @construction_function()
 def tangent_point(u, s) -> Point:
     """tangent point of u and s, requires u and s to be tangent"""
-    if lc(u, s) != 0:
-        raise FigureException(f"Line {u.name} is not tangent circle {s.name} in construction function tangent_points")
+    if not is_lc(u, s):
+        raise FigureException(f"Line {u.name} is not tangent to circle {s.name} in construction function tangent_points")
     return foot(s.o, u)
 
 @construction_function()
 def pole(u, s) -> Point:
     """pole point of u wrt s, requires u to not pas through center of s"""
-    if distance_pl(s.o, u) < EPSILON:
+    if is_pl(s.o, u):
         raise FigureException(f"Line {u.name} passes through the center of circle {s.name} in construction function pole")
     d = (s.r / distance_pl(s.o, u)) ** 2
     a = foot(s.o, u)
@@ -469,7 +494,7 @@ def intersections_cc(s, t) -> tuple[Point, Point]:
 @construction_function()
 def intersection_cc(s, t) -> Point:
     """tangent point of s and t, requires s and t to be tangent"""
-    if cc(s, t) != 0:
+    if not is_tangent(s, t):
         raise FigureException(f"Circle {s.name} and {t.name} are not tangent in construction function intersection_cc")
     return intersection_ll(line(s.o, t.o), radical_axis(s, t))
 
@@ -590,6 +615,27 @@ def orthocenter(a, b, c) -> Point:
 def centroid(a, b, c) -> Point:
     """centroid of abc"""
     return Point((a.x + b.x + c.x) / 3, (a.y + b.y + c.y) / 3)
+
+## extra
+
+@construction_function()
+def second_intersection_plc(a, u, s) -> Point:
+    """intersection of u and s other than a, requires a to be on u and s, requires u and s to intersect"""
+    if lc(u, s) != -1:
+        raise FigureException(f"Line {u.name} and {s.name} do not intersect in construction function second_intersection_plc")
+    if not is_pl(a, u) or not is_pc(a, s):
+        raise FigureException(f"Point {a.name} is not on line {u.name} or circle {s.name} in construction function second_intersection_plc")
+    b, c = intersections_lc(u, s)
+    return b if distance_pp(a, c) < EPSILON else c
+
+def second_intersection_pcc(a, s, t) -> Point:
+    """intersection of s and t other than a, requires a to be on s and t, requires s and t to intersect"""
+    if cc(s, t) != -1:
+        raise FigureException(f"Circles {s.name} and {t.name} do not intersect in construction function second_intersection_pcc")
+    if not is_pc(a, s) or not is_pc(a, t):
+        raise FigureException(f"Point {a.name} is not on circles {s.name} and {t.name} in construction function second_intersection_pcc")
+    b, c = intersections_cc(s, t)
+    return b if distance_pp(a, c) < EPSILON else c
 
 # check functions
 
