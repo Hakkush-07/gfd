@@ -1,13 +1,14 @@
-% examples/imo2012-p1/utils
+A B C = triangle
+u = B C line
+v = A C line
+w = A B line
 
-J = A B C excenter
+J = A B C incenter
 M = J u foot
 K = J w foot
 L = J v foot
-> 2 custom_function = $1 M line* $2 J line* intersection
-F = L B custom_function
-G = K C custom_function
-S = A F line* u intersection
-T = A G line* u intersection
-
-# ? M S M T is_equal_length
+> 2 intersection_xM_xJ = $1 M line* $2 J line* intersection_ll
+F = L B intersection_xM_xJ
+G = K C intersection_xM_xJ
+S = A F line* u intersection_ll
+T = A G line* u intersection_ll

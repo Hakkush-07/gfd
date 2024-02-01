@@ -1,0 +1,8 @@
+A B C = triangle
+s = A B C circumcircle
+D = C B reflection_pp
+E = B D midpoint
+t = D E circle_centered
+u = s t radical_axis
+X = u B C line intersection_ll
+Y = u A B C line parallel_line intersection_ll

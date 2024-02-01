@@ -1,0 +1,13 @@
+A B C = triangle
+I = A B C incenter
+omega = A B C incircle
+
+D = B C line* omega tangent_point
+E = C A line* omega tangent_point
+F = A B line* omega tangent_point
+
+R . = D E F line* perpendicular_line* omega intersections_lc
+. P = A R line* omega intersections_lc
+. Q = P C E circumcircle* P B F circumcircle* intersections_cc
+
+? D I line* P Q line* A I perpendicular_through* is_concurrent
