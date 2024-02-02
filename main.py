@@ -1,6 +1,7 @@
 from sys import argv
+from itertools import combinations
 
-from functions import construction_functions, check_functions, properties
+from functions import construction_functions, check_functions, properties, check_everything
 from exceptions import GFDException, FigureException
 from objects import Obj
 
@@ -25,8 +26,10 @@ class Figure:
     def interpret(self, filename):
         """starting point"""
         self.interpret_file(filename)
+
         with open(f"{filename[:-4]}.asy", "w+") as file:
             file.write(self.asy())
+
         with open(f"{filename[:-4]}.txt", "w+") as file:
             file.write(self.txt())
 
@@ -94,7 +97,7 @@ class Figure:
         interprets a construction line in a gfd
         construction line consists of object names and function names
         function names may include * to indicate that its output should be included in the final figure
-        it is used by inline calls, after *
+        it is used by inline calls
         """
         if "=" not in tokens:
             raise GFDException("no = in construction line", *self.line_counters[-1])
@@ -189,10 +192,18 @@ class Figure:
                 if subtoken.startswith("$"):
                     subtoken = parameters[int(subtoken[1:]) - 1]
                 self.update_stack(stack, subtoken)
+
         elif token in self.objects:
             stack.append(self.objects[token])
+            
         else:
             raise GFDException(f"{token} is not defined", *self.line_counters[-1])
+
+    def check_trivial(self):
+        """adds all trivial properties derived from existing known properties to the properties"""
+        # TODO
+        pass
+
 
     def asy(self) -> str:
         """asy string of the figure"""
@@ -203,17 +214,16 @@ class Figure:
             if obj.order == 0:
                 obj.set_dir(properties, sorted_objects)
             if obj.order == 1:
-                obj.set_lm_rm(properties)
+                obj.set_lm_rm(properties, sorted_objects)
         definitions = "\n".join([obj.asy_definition() for obj in sorted_objects])
         draws = "\n".join([obj.asy_draw(plc) for obj in sorted_objects])
         with open("templates/template.asy", "r+") as file:
             template = file.read().replace("FIGURE", definitions + "\n\n" + draws)
         return template
     
-    def txt(self) -> str:
-        """explanations of the figure"""
+    def properties_txt(self, properties_dct):
         s = ""
-        for name, prop in properties.items():
+        for name, prop in properties_dct.items():
             t = f"{name}\n"
             for objs in prop:
                 if any([obj not in self.objects.values() for obj in objs]):
@@ -221,6 +231,35 @@ class Figure:
                 t += f"    {', '.join(map(str, objs))}\n"
             t += "\n"
             s += t
+        return s
+    
+    def txt(self) -> str:
+        """explanations of the figure"""
+        s = ""
+        s += "Object in the Figure\n"
+        for obj_name, obj in self.objects.items():
+            s += f"    {obj_name}: {obj}\n"
+
+        self.check_trivial()
+        known_properties = {}
+        for pname, p in properties.items():
+            known_properties[pname] = p.copy()
+
+        s += "\nKnown Properties of All Objects\n"
+        s += self.properties_txt(known_properties)
+
+        check_everything(self.objects.values())
+        all_properties = {}
+        for pname, p in properties.items():
+            all_properties[pname] = p.copy()
+
+        for name, st in all_properties.items():
+            for known in known_properties[name]:
+                st.remove(known)
+
+        s += "\nUnknown Properties of All Objects\n"
+        s += self.properties_txt(all_properties)
+
         return s
 
 if __name__ == "__main__":

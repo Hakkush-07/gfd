@@ -6,8 +6,9 @@ D = B C line* omega tangent_point
 E = C A line* omega tangent_point
 F = A B line* omega tangent_point
 
-R . = D E F line* perpendicular_line* omega intersections_lc
-. P = A R line* omega intersections_lc
-. Q = P C E circumcircle* P B F circumcircle* intersections_cc
+R = D D E F line* perpendicular_line* omega second_intersection_plc
+P = R A R line* omega second_intersection_plc
+Q = P P C E circumcircle* P B F circumcircle* second_intersection_pcc
 
-? D I line* P Q line* A I perpendicular_through* is_concurrent
+x y z = D I line P Q line A I perpendicular_through
+# ? D I line* P Q line* A I perpendicular_through* is_concurrent

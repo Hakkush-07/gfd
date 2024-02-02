@@ -1,9 +1,7 @@
 A B C = triangle
-u = B C line
-v = A C line
-w = A B line
+u v w = B C line A C line A B line
 
-J = A B C incenter
+J = A B C excenter
 M = J u foot
 K = J w foot
 L = J v foot

@@ -5,5 +5,6 @@ D = A B random_point_on_segment
 E = v D A B C internal_angle_bisector perpendicular_line* intersection_ll
 F . = B D perpendicular_bisector* gamma intersections_lc
 . G = C E perpendicular_bisector* gamma intersections_lc
-? D E line* F G line* is_parallel
+x y = D E line F G line
+# ? D E line* F G line* is_parallel
 

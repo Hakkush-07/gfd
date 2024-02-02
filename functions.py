@@ -77,6 +77,14 @@ class ConstructionFunction:
     def __len__(self):
         return len(self.parameters)
 
+def check_everything(objects):
+    for check_function in check_functions.values():
+        for check_function_arguments in product(*[[x for x in objects if type(x) == cls] for cls in check_function.parameters]):
+            if len(set(check_function_arguments)) != len(check_function_arguments):
+                # not all different
+                continue
+            check_function(*check_function_arguments)
+
 # construction function decorator
 def construction_function():
     def construction_function_decorator(func):
@@ -89,12 +97,7 @@ def construction_function():
 
             # for input and output objects, make every claim and check if true, this will be the known properties
             combined = list(args) + result_lst
-            for check_function in check_functions.values():
-                for check_function_arguments in product(*[[x for x in combined if type(x) == cls] for cls in check_function.parameters]):
-                    if len(set(check_function_arguments)) != len(check_function_arguments):
-                        # not all different
-                        continue
-                    check_function(*check_function_arguments)
+            check_everything(combined)
             return result
         construction_functions[func.__name__] = ConstructionFunction(checked_construction_function)
         return checked_construction_function
@@ -237,6 +240,12 @@ def angle_ps(s, a):
             return pi + u
         else:
             return pi + u
+
+def same_side_of_line(a, b, u):
+    """whether a and b lie on the same side of line u, requires a and b to not be on u"""
+    if is_pl(a, u) or is_pl(b, u):
+        raise FigureException("a or b lie on u in same_side_of_line function")
+    return u(a) * u(b) > 0
 
 # construction functions
 
@@ -431,8 +440,13 @@ def intersection_ll(u, v) -> Point:
 
 @construction_function()
 def angle_bisector(u, v) -> Line:
-    """angle bisector of u and v, considers orientation"""
+    """angle bisector of u and v"""
     return Line(u.a / sqrt(u.a ** 2 + u.b ** 2) + v.a / sqrt(v.a ** 2 + v.b ** 2), u.b / sqrt(u.a ** 2 + u.b ** 2) + v.b / sqrt(v.a ** 2 + v.b ** 2), u.c / sqrt(u.a ** 2 + u.b ** 2) + v.c / sqrt(v.a ** 2 + v.b ** 2))
+
+@construction_function()
+def angle_bisector2(u, v) -> Line:
+    """angle bisector of u and v, other"""
+    return Line(u.a / sqrt(u.a ** 2 + u.b ** 2) - v.a / sqrt(v.a ** 2 + v.b ** 2), u.b / sqrt(u.a ** 2 + u.b ** 2) - v.b / sqrt(v.a ** 2 + v.b ** 2), u.c / sqrt(u.a ** 2 + u.b ** 2) - v.c / sqrt(v.a ** 2 + v.b ** 2))
 
 @construction_function()
 def reflection_ll(u, v) -> Line:
@@ -541,12 +555,16 @@ def tangent_lines_internal(s, t) -> tuple[Line, Line]:
 @construction_function()
 def internal_angle_bisector(a, b, c) -> Line:
     """internal angle bisector of angle bac"""
-    return angle_bisector(line(a, b), line(a, c))
+    option1 = angle_bisector(line(a, b), line(a, c))
+    option2 = angle_bisector2(line(a, b), line(a, c))
+    return option1 if not same_side_of_line(b, c, option1) else option2
 
 @construction_function()
 def external_angle_bisector(a, b, c) -> Line:
     """external angle bisector of angle bac"""
-    return angle_bisector(line(a, b), line(c, a))
+    option1 = angle_bisector(line(a, b), line(a, c))
+    option2 = angle_bisector2(line(a, b), line(a, c))
+    return option1 if same_side_of_line(b, c, option1) else option2
 
 @construction_function()
 def altitude(a, b, c) -> Line:
@@ -580,7 +598,7 @@ def circumcircle(a, b, c) -> Circle:
 @construction_function()
 def incenter(a, b, c) -> Point:
     """incenter of abc"""
-    return intersection_ll(internal_angle_bisector(b, c, a), internal_angle_bisector(c, a, b))
+    return intersection_ll(internal_angle_bisector(b, a, c), internal_angle_bisector(c, a, b))
 
 def inradius(a, b, c) -> float:
     """inradius of abc"""
@@ -627,6 +645,7 @@ def second_intersection_plc(a, u, s) -> Point:
     b, c = intersections_lc(u, s)
     return b if distance_pp(a, c) < EPSILON else c
 
+@construction_function()
 def second_intersection_pcc(a, s, t) -> Point:
     """intersection of s and t other than a, requires a to be on s and t, requires s and t to intersect"""
     if cc(s, t) != -1:
@@ -635,6 +654,13 @@ def second_intersection_pcc(a, s, t) -> Point:
         raise FigureException(f"Point {a.name} is not on circles {s.name} and {t.name} in construction function second_intersection_pcc")
     b, c = intersections_cc(s, t)
     return b if distance_pp(a, c) < EPSILON else c
+
+@construction_function()
+def midpoint_of_arc(a, b, s):
+    """midpoint of arc ab of circle s, requires a and b to be on s"""
+    if not is_pc(a, s) or not is_pc(b, s):
+        raise FigureException(f"Point {a.name} or {b.name} is not on circle {s.name} in construction function midpoint_of_arc")
+    return intersections_lc(perpendicular_bisector(a, b), s)[0]
 
 # check functions
 

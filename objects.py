@@ -21,7 +21,7 @@ class Obj:
         self.order = asy_order
         self.id = Obj.count
         Obj.count += 1
-        self.name = f"o_{{{str(self.id).zfill(3)}}}"
+        self.name = f"o_{{{str(self.id)}}}"
 
     @property
     def name_wo_special(self):
@@ -65,7 +65,7 @@ class Point(Obj):
         return f"Point {self.name} [{self.id}]"
     
     def set_dir(self, properties, objects):
-        """find the empties part around the point to put the label"""
+        """find the emptiest part around the point to put the label"""
         occupied_directions = []
         lines = [pl[1] for pl in properties["point on line"] if self in pl if pl[1] in objects]
         circles = [pc[1] for pc in properties["point on circle"] if self in pc if pc[1] in objects]
@@ -106,6 +106,9 @@ class Point(Obj):
             occupied_directions.append(u - pi / 2)
         for i, o in enumerate(occupied_directions):
             occupied_directions[i] = o % (2 * pi)
+        if not occupied_directions:
+            self.direction = 90
+            return
         occupied_directions.sort()
         occupied_directions.append(occupied_directions[0] + 2 * pi)
         diffs = [j - i for i, j in zip(occupied_directions[:-1], occupied_directions[1:])]
@@ -170,7 +173,7 @@ class Line(Obj):
     def slope(self):
         return -self.a / self.b
     
-    def set_lm_rm(self, properties):
+    def set_lm_rm(self, properties, objects):
         """based on the properties, find the leftmost and rightmost points on the line, used for drawing in asy"""
         points = [pl[0] for pl in properties["point on line"] if self in pl]
         self.lmrm = False
@@ -179,12 +182,16 @@ class Line(Obj):
         self.lmrm = True
         self.lm = min(points, key=lambda p: p.x)  # leftmost point on the line
         self.rm = max(points, key=lambda p: p.x)  # rightmost point on the line
+        self.lm_in_figure = self.lm in objects
+        self.rm_in_figure = self.rm in objects
     
     def asy_definition(self) -> str:
         """asy line for defining this line"""
         if not self.lmrm:
             return ""
-        return f"path {self.name_wo_special} = ({self.lm.x}, {self.lm.y}) -- ({self.rm.x}, {self.rm.y});"
+        str_lm = f"{self.lm.name_wo_special}" if self.lm_in_figure else f"({self.lm.x}, {self.lm.y})"
+        str_rm = f"{self.rm.name_wo_special}" if self.rm_in_figure else f"({self.rm.x}, {self.rm.y})"
+        return f"path {self.name_wo_special} = {str_lm} -- {str_rm};"
     
     def asy_draw(self, plc) -> str:
         """asy line for drawing this line"""
