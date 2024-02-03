@@ -1,0 +1,125 @@
+Object in the Figure
+    A: Point A [0]
+    B: Point B [1]
+    C: Point C [2]
+    I: Point I [10]
+    omega: Circle omega [12]
+    o_{3}: Line o_{3} [3]
+    D: Point D [14]
+    o_{4}: Line o_{4} [4]
+    E: Point E [16]
+    o_{5}: Line o_{5} [5]
+    F: Point F [18]
+    o_{19}: Line o_{19} [19]
+    o_{20}: Line o_{20} [20]
+    R: Point R [21]
+    o_{22}: Line o_{22} [22]
+    P: Point P [23]
+    o_{32}: Circle o_{32} [32]
+    o_{41}: Circle o_{41} [41]
+    Q: Point Q [43]
+    x: Line x [13]
+    y: Line y [42]
+    z: Line z [44]
+
+Known Properties of All Objects
+point on line
+    Point R [21], Line o_{22} [22]
+    Point D [14], Line x [13]
+    Point P [23], Line o_{22} [22]
+    Point A [0], Line o_{5} [5]
+    Point E [16], Line o_{4} [4]
+    Point B [1], Line o_{3} [3]
+    Point E [16], Line o_{19} [19]
+    Point F [18], Line o_{19} [19]
+    Point Q [43], Line y [42]
+    Point D [14], Line o_{3} [3]
+    Point A [0], Line z [44]
+    Point C [2], Line o_{4} [4]
+    Point A [0], Line o_{4} [4]
+    Point B [1], Line o_{5} [5]
+    Point P [23], Line y [42]
+    Point A [0], Line o_{22} [22]
+    Point R [21], Line o_{20} [20]
+    Point D [14], Line o_{20} [20]
+    Point I [10], Line x [13]
+    Point C [2], Line o_{3} [3]
+    Point F [18], Line o_{5} [5]
+
+point on circle
+    Point B [1], Circle o_{41} [41]
+    Point E [16], Circle o_{32} [32]
+    Point R [21], Circle omega [12]
+    Point E [16], Circle omega [12]
+    Point P [23], Circle o_{32} [32]
+    Point C [2], Circle o_{32} [32]
+    Point Q [43], Circle o_{32} [32]
+    Point P [23], Circle omega [12]
+    Point F [18], Circle omega [12]
+    Point P [23], Circle o_{41} [41]
+    Point F [18], Circle o_{41} [41]
+    Point D [14], Circle omega [12]
+    Point Q [43], Circle o_{41} [41]
+
+line tangent to circle
+    Line o_{3} [3], Circle omega [12]
+    Line o_{4} [4], Circle omega [12]
+    Line o_{5} [5], Circle omega [12]
+
+line perpendicular to line
+    Line o_{3} [3], Line x [13]
+    Line o_{19} [19], Line o_{20} [20]
+
+line parallel to line
+
+circle tangent to circle
+
+collinear points
+
+concyclic points
+
+concurrent lines
+
+
+Unknown Properties of All Objects
+point on line
+
+point on circle
+
+line tangent to circle
+
+line perpendicular to line
+    Line o_{20} [20], Line z [44]
+
+line parallel to line
+    Line o_{19} [19], Line z [44]
+
+circle tangent to circle
+
+collinear points
+    Point A [0], Point R [21], Point P [23]
+    Point B [1], Point C [2], Point D [14]
+    Point A [0], Point C [2], Point E [16]
+    Point A [0], Point B [1], Point F [18]
+
+concyclic points
+    Point E [16], Point F [18], Point R [21], Point P [23]
+    Point B [1], Point F [18], Point P [23], Point Q [43]
+    Point B [1], Point C [2], Point I [10], Point Q [43]
+    Point D [14], Point F [18], Point R [21], Point P [23]
+    Point C [2], Point E [16], Point P [23], Point Q [43]
+    Point D [14], Point E [16], Point F [18], Point R [21]
+    Point C [2], Point I [10], Point D [14], Point E [16]
+    Point B [1], Point I [10], Point D [14], Point F [18]
+    Point D [14], Point E [16], Point R [21], Point P [23]
+    Point D [14], Point E [16], Point F [18], Point P [23]
+    Point A [0], Point I [10], Point E [16], Point F [18]
+
+concurrent lines
+    Line o_{3} [3], Line x [13], Line o_{20} [20]
+    Line o_{5} [5], Line o_{22} [22], Line z [44]
+    Line x [13], Line y [42], Line z [44]
+    Line o_{4} [4], Line o_{5} [5], Line o_{22} [22]
+    Line o_{4} [4], Line o_{5} [5], Line z [44]
+    Line o_{4} [4], Line o_{22} [22], Line z [44]
+

@@ -1,0 +1,86 @@
+Object in the Figure
+    A: Point A [0]
+    B: Point B [1]
+    C: Point C [2]
+    gamma: Circle gamma [12]
+    u: Line u [3]
+    v: Line v [4]
+    w: Line w [5]
+    D: Point D [13]
+    o_{16}: Line x [16]
+    E: Point E [17]
+    o_{18}: Line o_{18} [18]
+    F: Point F [19]
+    o_{21}: Line o_{21} [21]
+    G: Point G [23]
+    x: Line x [16]
+    y: Line y [24]
+
+Known Properties of All Objects
+point on line
+    Point C [2], Line v [4]
+    Point A [0], Line v [4]
+    Point B [1], Line w [5]
+    Point D [13], Line x [16]
+    Point A [0], Line w [5]
+    Point F [19], Line o_{18} [18]
+    Point D [13], Line w [5]
+    Point B [1], Line u [3]
+    Point F [19], Line y [24]
+    Point E [17], Line v [4]
+    Point E [17], Line x [16]
+    Point C [2], Line u [3]
+    Point G [23], Line o_{21} [21]
+    Point G [23], Line y [24]
+
+point on circle
+    Point A [0], Circle gamma [12]
+    Point B [1], Circle gamma [12]
+    Point G [23], Circle gamma [12]
+    Point C [2], Circle gamma [12]
+    Point F [19], Circle gamma [12]
+
+line tangent to circle
+
+line perpendicular to line
+
+line parallel to line
+
+circle tangent to circle
+
+collinear points
+    Point A [0], Point B [1], Point D [13]
+
+concyclic points
+
+concurrent lines
+
+
+Unknown Properties of All Objects
+point on line
+
+point on circle
+
+line tangent to circle
+
+line perpendicular to line
+    Line v [4], Line o_{21} [21]
+    Line w [5], Line o_{18} [18]
+
+line parallel to line
+    Line x [16], Line y [24]
+
+circle tangent to circle
+
+collinear points
+    Point A [0], Point C [2], Point E [17]
+
+concyclic points
+    Point A [0], Point B [1], Point F [19], Point G [23]
+    Point A [0], Point B [1], Point C [2], Point F [19]
+    Point B [1], Point C [2], Point F [19], Point G [23]
+    Point A [0], Point C [2], Point F [19], Point G [23]
+    Point A [0], Point B [1], Point C [2], Point G [23]
+
+concurrent lines
+

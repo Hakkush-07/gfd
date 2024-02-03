@@ -2,5 +2,4 @@
 *.log
 *.pdf
 __pycache__
-**/figure.txt
-tests/main.txt
+

@@ -1,0 +1,118 @@
+Object in the Figure
+    A: Point A [0]
+    B: Point B [1]
+    C: Point C [2]
+    u: Line u [3]
+    v: Line v [4]
+    w: Line w [5]
+    omega: Circle omega [12]
+    S: Point S [16]
+    t: Line t [17]
+    o_{18}: Line y [18]
+    D: Point D [19]
+    E: Point E [20]
+    o_{22}: Line o_{22} [22]
+    L: Point L [23]
+    omega2: Circle omega2 [30]
+    P: Point P [32]
+    x: Line x [33]
+    y: Line y [18]
+    z: Line z [14]
+
+Known Properties of All Objects
+point on line
+    Point E [20], Line t [17]
+    Point L [23], Line o_{22} [22]
+    Point A [0], Line w [5]
+    Point D [19], Line y [18]
+    Point A [0], Line z [14]
+    Point B [1], Line u [3]
+    Point A [0], Line t [17]
+    Point B [1], Line y [18]
+    Point P [32], Line x [33]
+    Point E [20], Line o_{22} [22]
+    Point C [2], Line v [4]
+    Point A [0], Line v [4]
+    Point D [19], Line t [17]
+    Point B [1], Line w [5]
+    Point S [16], Line y [18]
+    Point C [2], Line u [3]
+    Point B [1], Line o_{22} [22]
+
+point on circle
+    Point B [1], Circle omega [12]
+    Point D [19], Circle omega2 [30]
+    Point P [32], Circle omega [12]
+    Point P [32], Circle omega2 [30]
+    Point B [1], Circle omega2 [30]
+    Point A [0], Circle omega [12]
+    Point C [2], Circle omega [12]
+    Point E [20], Circle omega [12]
+    Point L [23], Circle omega2 [30]
+
+line tangent to circle
+    Line x [33], Circle omega2 [30]
+
+line perpendicular to line
+    Line u [3], Line t [17]
+
+line parallel to line
+
+circle tangent to circle
+
+collinear points
+
+concyclic points
+
+concurrent lines
+    Line v [4], Line w [5], Line z [14]
+
+
+Unknown Properties of All Objects
+point on line
+
+point on circle
+    Point S [16], Circle omega [12]
+
+line tangent to circle
+
+line perpendicular to line
+
+line parallel to line
+
+circle tangent to circle
+
+collinear points
+    Point S [16], Point L [23], Point P [32]
+    Point B [1], Point S [16], Point D [19]
+    Point B [1], Point E [20], Point L [23]
+    Point A [0], Point D [19], Point E [20]
+
+concyclic points
+    Point A [0], Point B [1], Point C [2], Point E [20]
+    Point B [1], Point C [2], Point S [16], Point E [20]
+    Point B [1], Point S [16], Point E [20], Point P [32]
+    Point A [0], Point B [1], Point S [16], Point E [20]
+    Point A [0], Point B [1], Point C [2], Point P [32]
+    Point A [0], Point S [16], Point E [20], Point P [32]
+    Point A [0], Point C [2], Point S [16], Point E [20]
+    Point B [1], Point C [2], Point S [16], Point P [32]
+    Point B [1], Point C [2], Point E [20], Point P [32]
+    Point A [0], Point B [1], Point S [16], Point P [32]
+    Point A [0], Point C [2], Point S [16], Point P [32]
+    Point C [2], Point S [16], Point E [20], Point P [32]
+    Point A [0], Point B [1], Point C [2], Point S [16]
+    Point B [1], Point D [19], Point L [23], Point P [32]
+    Point A [0], Point B [1], Point E [20], Point P [32]
+    Point A [0], Point C [2], Point E [20], Point P [32]
+
+concurrent lines
+    Line z [14], Line y [18], Line x [33]
+    Line u [3], Line y [18], Line o_{22} [22]
+    Line v [4], Line w [5], Line t [17]
+    Line u [3], Line w [5], Line o_{22} [22]
+    Line w [5], Line z [14], Line t [17]
+    Line v [4], Line z [14], Line t [17]
+    Line u [3], Line w [5], Line y [18]
+    Line w [5], Line y [18], Line o_{22} [22]
+
