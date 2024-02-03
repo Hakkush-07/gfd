@@ -1,7 +1,7 @@
 A B C = triangle
 u v w = B C line A C line A B line
 omega = A B C circumcircle
-S = B C perpendicular_bisector A B C external_angle_bisector intersection_ll
+S = B C omega midpoint_of_arc
 t = A u perpendicular_line
 D = t B S line* intersection_ll
 E = A t omega second_intersection_plc

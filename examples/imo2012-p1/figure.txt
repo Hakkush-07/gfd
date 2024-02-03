@@ -63,12 +63,40 @@ line parallel to line
 circle tangent to circle
 
 collinear points
+    Point A [0], Point C [2], Point L [17]
+    Point C [2], Point S [23], Point T [25]
+    Point C [2], Point M [13], Point T [25]
+    Point B [1], Point C [2], Point M [13]
+    Point B [1], Point C [2], Point T [25]
+    Point B [1], Point M [13], Point T [25]
+    Point M [13], Point S [23], Point T [25]
+    Point C [2], Point J [10], Point G [21]
+    Point A [0], Point B [1], Point K [15]
+    Point C [2], Point M [13], Point S [23]
+    Point B [1], Point C [2], Point S [23]
+    Point B [1], Point M [13], Point S [23]
+    Point A [0], Point F [19], Point S [23]
+    Point M [13], Point L [17], Point F [19]
+    Point A [0], Point G [21], Point T [25]
+    Point B [1], Point J [10], Point F [19]
+    Point B [1], Point S [23], Point T [25]
+    Point M [13], Point K [15], Point G [21]
 
 concyclic points
+    Point A [0], Point J [10], Point K [15], Point L [17]
+    Point B [1], Point J [10], Point M [13], Point K [15]
+    Point C [2], Point J [10], Point M [13], Point L [17]
 
 concurrent lines
     Line u [3], Line w [5], Line o_{6} [6]
+    Line v [4], Line w [5], Line o_{24} [24]
+    Line v [4], Line o_{22} [22], Line o_{24} [24]
+    Line w [5], Line o_{22} [22], Line o_{24} [24]
     Line u [3], Line v [4], Line o_{9} [9]
+    Line u [3], Line o_{18} [18], Line o_{20} [20]
+    Line o_{9} [9], Line o_{20} [20], Line o_{24} [24]
+    Line o_{6} [6], Line o_{18} [18], Line o_{22} [22]
+    Line v [4], Line w [5], Line o_{22} [22]
 
 
 Unknown Properties of All Objects
@@ -91,31 +119,12 @@ line parallel to line
 circle tangent to circle
 
 collinear points
-    Point A [0], Point C [2], Point L [17]
-    Point C [2], Point S [23], Point T [25]
-    Point C [2], Point M [13], Point T [25]
-    Point B [1], Point C [2], Point M [13]
-    Point B [1], Point C [2], Point T [25]
-    Point B [1], Point M [13], Point T [25]
-    Point M [13], Point S [23], Point T [25]
-    Point C [2], Point J [10], Point G [21]
-    Point A [0], Point B [1], Point K [15]
-    Point C [2], Point M [13], Point S [23]
-    Point B [1], Point C [2], Point S [23]
-    Point B [1], Point M [13], Point S [23]
-    Point A [0], Point F [19], Point S [23]
-    Point M [13], Point L [17], Point F [19]
-    Point A [0], Point G [21], Point T [25]
-    Point B [1], Point J [10], Point F [19]
-    Point B [1], Point S [23], Point T [25]
-    Point M [13], Point K [15], Point G [21]
 
 concyclic points
     Point A [0], Point L [17], Point F [19], Point G [21]
     Point J [10], Point M [13], Point G [21], Point T [25]
     Point A [0], Point K [15], Point L [17], Point G [21]
     Point A [0], Point J [10], Point K [15], Point G [21]
-    Point A [0], Point J [10], Point K [15], Point L [17]
     Point A [0], Point J [10], Point L [17], Point G [21]
     Point C [2], Point M [13], Point S [23], Point T [25]
     Point J [10], Point K [15], Point L [17], Point G [21]
@@ -137,16 +146,7 @@ concyclic points
     Point J [10], Point L [17], Point F [19], Point G [21]
     Point J [10], Point M [13], Point F [19], Point G [21]
     Point A [0], Point B [1], Point J [10], Point T [25]
-    Point C [2], Point J [10], Point M [13], Point L [17]
     Point A [0], Point C [2], Point J [10], Point S [23]
-    Point B [1], Point J [10], Point M [13], Point K [15]
 
 concurrent lines
-    Line v [4], Line w [5], Line o_{24} [24]
-    Line v [4], Line o_{22} [22], Line o_{24} [24]
-    Line o_{6} [6], Line o_{18} [18], Line o_{22} [22]
-    Line o_{9} [9], Line o_{20} [20], Line o_{24} [24]
-    Line w [5], Line o_{22} [22], Line o_{24} [24]
-    Line u [3], Line o_{18} [18], Line o_{20} [20]
-    Line v [4], Line w [5], Line o_{22} [22]
 

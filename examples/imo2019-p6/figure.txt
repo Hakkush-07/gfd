@@ -75,10 +75,29 @@ line parallel to line
 circle tangent to circle
 
 collinear points
+    Point A [0], Point R [21], Point P [23]
+    Point B [1], Point C [2], Point D [14]
+    Point A [0], Point C [2], Point E [16]
+    Point A [0], Point B [1], Point F [18]
 
 concyclic points
+    Point E [16], Point F [18], Point R [21], Point P [23]
+    Point B [1], Point F [18], Point P [23], Point Q [43]
+    Point D [14], Point F [18], Point R [21], Point P [23]
+    Point C [2], Point E [16], Point P [23], Point Q [43]
+    Point D [14], Point E [16], Point F [18], Point R [21]
+    Point C [2], Point I [10], Point D [14], Point E [16]
+    Point B [1], Point I [10], Point D [14], Point F [18]
+    Point D [14], Point E [16], Point R [21], Point P [23]
+    Point D [14], Point E [16], Point F [18], Point P [23]
+    Point A [0], Point I [10], Point E [16], Point F [18]
 
 concurrent lines
+    Line o_{4} [4], Line o_{5} [5], Line o_{22} [22]
+    Line o_{5} [5], Line o_{22} [22], Line z [44]
+    Line o_{4} [4], Line o_{5} [5], Line z [44]
+    Line o_{4} [4], Line o_{22} [22], Line z [44]
+    Line o_{3} [3], Line x [13], Line o_{20} [20]
 
 
 Unknown Properties of All Objects
@@ -97,29 +116,10 @@ line parallel to line
 circle tangent to circle
 
 collinear points
-    Point A [0], Point R [21], Point P [23]
-    Point B [1], Point C [2], Point D [14]
-    Point A [0], Point C [2], Point E [16]
-    Point A [0], Point B [1], Point F [18]
 
 concyclic points
-    Point E [16], Point F [18], Point R [21], Point P [23]
-    Point B [1], Point F [18], Point P [23], Point Q [43]
     Point B [1], Point C [2], Point I [10], Point Q [43]
-    Point D [14], Point F [18], Point R [21], Point P [23]
-    Point C [2], Point E [16], Point P [23], Point Q [43]
-    Point D [14], Point E [16], Point F [18], Point R [21]
-    Point C [2], Point I [10], Point D [14], Point E [16]
-    Point B [1], Point I [10], Point D [14], Point F [18]
-    Point D [14], Point E [16], Point R [21], Point P [23]
-    Point D [14], Point E [16], Point F [18], Point P [23]
-    Point A [0], Point I [10], Point E [16], Point F [18]
 
 concurrent lines
-    Line o_{3} [3], Line x [13], Line o_{20} [20]
-    Line o_{5} [5], Line o_{22} [22], Line z [44]
     Line x [13], Line y [42], Line z [44]
-    Line o_{4} [4], Line o_{5} [5], Line o_{22} [22]
-    Line o_{4} [4], Line o_{5} [5], Line z [44]
-    Line o_{4} [4], Line o_{22} [22], Line z [44]
 

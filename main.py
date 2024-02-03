@@ -5,6 +5,151 @@ from functions import construction_functions, check_functions, properties, check
 from exceptions import GFDException, FigureException
 from objects import Obj
 
+def total_properties():
+    return sum([len(prop) for prop in properties.values()])
+
+def check_trivial(objects):
+    """adds all trivial properties derived from existing known properties to the properties"""
+    old = total_properties()
+
+    while True:
+        check_trivial_perp_parallel(objects)
+        new = total_properties()
+        if old == new:
+            break
+        old = new
+
+    while True:
+        check_trivial_collinear_pl(objects)
+        new = total_properties()
+        if old == new:
+            break
+        old = new
+    
+    check_trivial_concurrent(objects)
+
+    while True:
+        check_trivial_concyclic_pc(objects)
+        new = total_properties()
+        if old == new:
+            break
+        old = new
+
+    while True:
+        check_trivial_tangent_lc(objects)
+        new = total_properties()
+        if old == new:
+            break
+        old = new
+
+def check_trivial_perp_parallel(objects):
+    for u in [obj for obj in objects if obj.order == 1]:
+        parallel = [[v for v in l2 if u.id != v.id][0] for l2 in properties["line parallel to line"] if u in l2]
+        perp = [[v for v in l2 if u.id != v.id][0] for l2 in properties["line perpendicular to line"] if u in l2]
+
+        # uv parallel & uw parallel => vw parallel
+        for v, w in combinations(parallel, 2):
+            properties["line parallel to line"].add(tuple(sorted([v, w], key=lambda o: o.criteria())))
+
+        # uv perpendicular & uw perpendicular => vw parallel
+        for v, w in combinations(perp, 2):
+            properties["line parallel to line"].add(tuple(sorted([v, w], key=lambda o: o.criteria())))
+        
+        # uv parallel & uw perpendicular => vw perpendicular
+        for v in parallel:
+            for w in perp:
+                properties["line perpendicular to line"].add(tuple(sorted([v, w], key=lambda o: o.criteria())))
+
+def check_trivial_collinear_pl(objects):
+    for u in [obj for obj in objects if obj.order == 1]:
+        points = [pl[0] for pl in properties["point on line"] if u in pl]
+
+        # au bu cu pl => abc collinear
+        for p3 in combinations(points, 3):
+            properties["collinear points"].add(tuple(sorted(p3, key=lambda o: o.criteria())))
+        
+        # au bu pl & abc collinear => cu pl
+        for a, b in combinations(points, 2):
+            for col in properties["collinear points"]:
+                if a in col and b in col:
+                    s = set(col)
+                    s.remove(a)
+                    s.remove(b)
+                    c = next(iter(s))
+                    properties["point on line"].add(tuple(sorted([c, u], key=lambda o: o.criteria())))
+
+def check_trivial_concurrent(objects):
+    for a in [obj for obj in objects if obj.order == 0]:
+        lines = [pl[1] for pl in properties["point on line"] if a in pl]
+
+        # au av aw pl => uvw concurrent
+        for l3 in combinations(lines, 3):
+            properties["concurrent lines"].add(tuple(sorted(l3, key=lambda o: o.criteria())))
+
+def check_trivial_concyclic_pc(objects):
+    for s in [obj for obj in objects if obj.order == 2]:
+        points = [pc[0] for pc in properties["point on circle"] if s in pc]
+
+        # as bs cs ds pc => abcd concyclic
+        for p4 in combinations(points, 4):
+            properties["concyclic points"].add(tuple(sorted(p4, key=lambda o: o.criteria())))
+        
+        # au bu pl & abc collinear => cu pl
+        for a, b, c in combinations(points, 3):
+            for con in properties["concyclic points"]:
+                if a in con and b in con and c in con:
+                    st = set(con)
+                    st.remove(a)
+                    st.remove(b)
+                    st.remove(c)
+                    d = next(iter(st))
+                    properties["point on circle"].add(tuple(sorted([d, s], key=lambda o: o.criteria())))
+        
+    # abcd uvwt, uv perpendicular & wt perpendicular => abcd concyclic
+    perp_lines_with_intersection_point = []
+    for ll in properties["line perpendicular to line"]:
+        points1 = [pl[0] for pl in properties["point on line"] if ll[0] in pl]
+        points2 = [pl[0] for pl in properties["point on line"] if ll[1] in pl]
+        intersection = [i for i in points1 if i in points2]
+        if intersection:
+            perp_lines_with_intersection_point.append([ll[0], ll[1], intersection[0]])
+    for u, v, a in perp_lines_with_intersection_point:
+        points_u = [pl[0] for pl in properties["point on line"] if u in pl]
+        points_v = [pl[0] for pl in properties["point on line"] if v in pl]
+        for x, y, b in perp_lines_with_intersection_point:
+            if len(set([u, v, x, y])) != 4:
+                continue
+            points_x = [pl[0] for pl in properties["point on line"] if x in pl]
+            points_y = [pl[0] for pl in properties["point on line"] if y in pl]
+            intersection_ux = [i for i in points_u if i in points_x]
+            intersection_uy = [i for i in points_u if i in points_y]
+            intersection_vx = [i for i in points_v if i in points_x]
+            intersection_vy = [i for i in points_v if i in points_y]
+            if intersection_ux and intersection_vy:
+                c = intersection_ux[0]
+                d = intersection_vy[0]
+                properties["concyclic points"].add(tuple(sorted([a, b, c, d], key=lambda o: o.criteria())))
+            if intersection_uy and intersection_vx:
+                c = intersection_uy[0]
+                d = intersection_vx[0]
+                properties["concyclic points"].add(tuple(sorted([a, b, c, d], key=lambda o: o.criteria())))
+        
+def check_trivial_tangent_lc(objects):
+    for u in [obj for obj in objects if obj.order == 1]:
+        points = [pl[0] for pl in properties["point on line"] if u in pl]
+        
+        for a in points:
+            a_circles = [pc[1] for pc in properties["point on circle"] if a in pc]
+            for s, t in combinations(a_circles, 2):
+                if (u, s) in properties["line tangent to circle"]:
+                    # au pl & as pc & at pc & us lc & ut lc => st tangent
+                    if (u, t) in properties["line tangent to circle"]:
+                        properties["circle tangent to circle"].add(tuple(sorted([s, t], key=lambda o: o.criteria())))
+
+                    # au pl & as pc & at pc & st tangent & us lc => ut lc
+                    if tuple(sorted([s, t], key=lambda o: o.criteria())) in properties["circle tangent to circle"]:
+                        properties["line tangent to line"].add((u, t))
+
 class Figure:
     """
     represents the figure
@@ -199,12 +344,6 @@ class Figure:
         else:
             raise GFDException(f"{token} is not defined", *self.line_counters[-1])
 
-    def check_trivial(self):
-        """adds all trivial properties derived from existing known properties to the properties"""
-        # TODO
-        pass
-
-
     def asy(self) -> str:
         """asy string of the figure"""
         # plc denotes if the objects should be labeled
@@ -240,7 +379,7 @@ class Figure:
         for obj_name, obj in self.objects.items():
             s += f"    {obj_name}: {obj}\n"
 
-        self.check_trivial()
+        check_trivial(self.objects.values())
         known_properties = {}
         for pname, p in properties.items():
             known_properties[pname] = p.copy()
@@ -255,6 +394,7 @@ class Figure:
 
         for name, st in all_properties.items():
             for known in known_properties[name]:
+                assert known in st
                 st.remove(known)
 
         s += "\nUnknown Properties of All Objects\n"

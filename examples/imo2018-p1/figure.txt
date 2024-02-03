@@ -50,8 +50,14 @@ circle tangent to circle
 
 collinear points
     Point A [0], Point B [1], Point D [13]
+    Point A [0], Point C [2], Point E [17]
 
 concyclic points
+    Point A [0], Point B [1], Point C [2], Point G [23]
+    Point A [0], Point B [1], Point C [2], Point F [19]
+    Point A [0], Point B [1], Point F [19], Point G [23]
+    Point B [1], Point C [2], Point F [19], Point G [23]
+    Point A [0], Point C [2], Point F [19], Point G [23]
 
 concurrent lines
 
@@ -73,14 +79,8 @@ line parallel to line
 circle tangent to circle
 
 collinear points
-    Point A [0], Point C [2], Point E [17]
 
 concyclic points
-    Point A [0], Point B [1], Point F [19], Point G [23]
-    Point A [0], Point B [1], Point C [2], Point F [19]
-    Point B [1], Point C [2], Point F [19], Point G [23]
-    Point A [0], Point C [2], Point F [19], Point G [23]
-    Point A [0], Point B [1], Point C [2], Point G [23]
 
 concurrent lines
 
