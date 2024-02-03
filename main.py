@@ -77,6 +77,13 @@ def check_trivial_collinear_pl(objects):
                     s.remove(b)
                     c = next(iter(s))
                     properties["point on line"].add(tuple(sorted([c, u], key=lambda o: o.criteria())))
+    
+    # abc collinear & abd collinear => abcd collinear
+    for col1, col2 in combinations(properties["collinear points"], 2):
+        s = set(list(col1) + list(col2))
+        if len(s) == 4:
+            for p3 in combinations(s, 3):
+                properties["collinear points"].add(tuple(sorted(p3, key=lambda o: o.criteria())))
 
 def check_trivial_concurrent(objects):
     for a in [obj for obj in objects if obj.order == 0]:
@@ -85,6 +92,13 @@ def check_trivial_concurrent(objects):
         # au av aw pl => uvw concurrent
         for l3 in combinations(lines, 3):
             properties["concurrent lines"].add(tuple(sorted(l3, key=lambda o: o.criteria())))
+    
+    # uvw concurrent & uvx concurrent => uvwx concurrent
+    for con1, con2 in combinations(properties["concurrent lines"], 2):
+        s = set(list(con1) + list(con2))
+        if len(s) == 4:
+            for l3 in combinations(s, 3):
+                properties["concurrent lines"].add(tuple(sorted(l3, key=lambda o: o.criteria())))
 
 def check_trivial_concyclic_pc(objects):
     for s in [obj for obj in objects if obj.order == 2]:
@@ -133,6 +147,13 @@ def check_trivial_concyclic_pc(objects):
                 c = intersection_uy[0]
                 d = intersection_vx[0]
                 properties["concyclic points"].add(tuple(sorted([a, b, c, d], key=lambda o: o.criteria())))
+        
+    # abcd concyclic & abce concyclic => abcde concyclic
+    for con1, con2 in combinations(properties["concyclic points"], 2):
+        s = set(list(con1) + list(con2))
+        if len(s) == 5:
+            for p4 in combinations(s, 4):
+                properties["concyclic points"].add(tuple(sorted(p4, key=lambda o: o.criteria())))
         
 def check_trivial_tangent_lc(objects):
     for u in [obj for obj in objects if obj.order == 1]:
