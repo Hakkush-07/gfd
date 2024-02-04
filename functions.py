@@ -274,7 +274,7 @@ def unit_circle() -> Circle:
 
 @construction_function()
 def random_point_on_circle(s) -> Point:
-    """random point on circle"""
+    """random point on circle s"""
     t = random() * 2 * pi
     return Point(s.o.x + s.r * cos(t), s.o.y + s.r * sin(t))
 
@@ -335,6 +335,7 @@ def random_nice_triangle() -> tuple[Point, Point, Point]:
 
 @construction_function()
 def random_line_through_point(a):
+    """random line through point a"""
     b = random_point_on_circle(Circle(a, 1))
     return line(a, b)
 
