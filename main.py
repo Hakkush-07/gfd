@@ -388,7 +388,7 @@ class Figure:
             for objs in prop:
                 if any([obj not in self.objects.values() for obj in objs]):
                     continue
-                t += f"    {', '.join(map(str, objs))}\n"
+                t += f"    {', '.join(map(lambda obj: obj.name, objs))}\n"
             t += "\n"
             s += t
         return s

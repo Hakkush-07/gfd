@@ -95,6 +95,11 @@ def construction_function():
             # result is either a single Obj or a tuple of Objs, convert it to a list
             result_lst = list(result) if type(result) == tuple else [result]
 
+            for obj in result_lst:
+                if not obj.recipe_parent_set:
+                    obj.parents = args
+                    obj.recipe = func.__name__
+
             # for input and output objects, make every claim and check if true, this will be the known properties
             combined = list(args) + result_lst
             check_everything(combined)

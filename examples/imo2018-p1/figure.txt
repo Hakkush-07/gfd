@@ -1,44 +1,44 @@
 Object in the Figure
-    A: Point A [0]
-    B: Point B [1]
-    C: Point C [2]
-    gamma: Circle gamma [12]
-    u: Line u [3]
-    v: Line v [4]
-    w: Line w [5]
-    D: Point D [13]
-    o_{16}: Line x [16]
-    E: Point E [17]
-    o_{18}: Line o_{18} [18]
-    F: Point F [19]
-    o_{21}: Line o_{21} [21]
-    G: Point G [23]
-    x: Line x [16]
-    y: Line y [24]
+    A: Point A [0] is triangle for 
+    B: Point B [1] is triangle for 
+    C: Point C [2] is triangle for 
+    gamma: Circle gamma [12] is circumcircle for A, B, C
+    u: Line u = BC [3] is line for B, C
+    v: Line v = AC [4] is line for A, C
+    w: Line w = BA [5] is line for A, B
+    D: Point D [13] is random_point_on_segment for A, B
+    o_{16}: Line x = DE [16] is perpendicular_line for D, o_{14}
+    E: Point E [17] is intersection_ll for v, x
+    o_{18}: Line o_{18} [18] is perpendicular_bisector for B, D
+    F: Point F [19] is intersections_lc for o_{18}, gamma
+    o_{21}: Line o_{21} [21] is perpendicular_bisector for C, E
+    G: Point G [23] is intersections_lc for o_{21}, gamma
+    x: Line x = DE [16] is perpendicular_line for D, o_{14}
+    y: Line y = FG [24] is line for F, G
 
 Known Properties of All Objects
 point on line
-    Point C [2], Line v [4]
-    Point A [0], Line v [4]
-    Point B [1], Line w [5]
-    Point D [13], Line x [16]
-    Point A [0], Line w [5]
-    Point F [19], Line o_{18} [18]
-    Point D [13], Line w [5]
-    Point B [1], Line u [3]
-    Point F [19], Line y [24]
-    Point E [17], Line v [4]
-    Point E [17], Line x [16]
-    Point C [2], Line u [3]
-    Point G [23], Line o_{21} [21]
-    Point G [23], Line y [24]
+    C, v
+    A, v
+    B, w
+    D, x
+    A, w
+    F, o_{18}
+    D, w
+    B, u
+    F, y
+    E, v
+    E, x
+    C, u
+    G, o_{21}
+    G, y
 
 point on circle
-    Point A [0], Circle gamma [12]
-    Point B [1], Circle gamma [12]
-    Point G [23], Circle gamma [12]
-    Point C [2], Circle gamma [12]
-    Point F [19], Circle gamma [12]
+    A, gamma
+    B, gamma
+    G, gamma
+    C, gamma
+    F, gamma
 
 line tangent to circle
 
@@ -49,15 +49,15 @@ line parallel to line
 circle tangent to circle
 
 collinear points
-    Point A [0], Point B [1], Point D [13]
-    Point A [0], Point C [2], Point E [17]
+    A, B, D
+    A, C, E
 
 concyclic points
-    Point A [0], Point B [1], Point C [2], Point G [23]
-    Point A [0], Point B [1], Point C [2], Point F [19]
-    Point A [0], Point B [1], Point F [19], Point G [23]
-    Point B [1], Point C [2], Point F [19], Point G [23]
-    Point A [0], Point C [2], Point F [19], Point G [23]
+    A, B, C, G
+    A, B, C, F
+    A, B, F, G
+    B, C, F, G
+    A, C, F, G
 
 concurrent lines
 
@@ -70,11 +70,11 @@ point on circle
 line tangent to circle
 
 line perpendicular to line
-    Line v [4], Line o_{21} [21]
-    Line w [5], Line o_{18} [18]
+    v, o_{21}
+    w, o_{18}
 
 line parallel to line
-    Line x [16], Line y [24]
+    x, y
 
 circle tangent to circle
 

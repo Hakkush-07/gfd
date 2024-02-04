@@ -1,98 +1,98 @@
 Object in the Figure
-    A: Point A [0]
-    B: Point B [1]
-    C: Point C [2]
-    u: Line u [3]
-    v: Line v [4]
-    w: Line w [5]
-    omega: Circle omega [12]
-    S: Point S [14]
-    t: Line t [18]
-    o_{17}: Line y [17]
-    D: Point D [19]
-    E: Point E [20]
-    o_{22}: Line o_{22} [22]
-    L: Point L [23]
-    omega2: Circle omega2 [30]
-    P: Point P [32]
-    x: Line x [33]
-    y: Line y [17]
-    z: Line z [34]
+    A: Point A [0] is triangle for 
+    B: Point B [1] is triangle for 
+    C: Point C [2] is triangle for 
+    u: Line u = BC [3] is line for B, C
+    v: Line v = AC [4] is line for A, C
+    w: Line w = BA [5] is line for A, B
+    omega: Circle omega [12] is circumcircle for A, B, C
+    S: Point S [14] is midpoint_of_arc for B, C, omega
+    t: Line t = AE [18] is perpendicular_line for A, u
+    o_{17}: Line y = BS [17] is line for B, S
+    D: Point D [19] is intersection_ll for t, y
+    E: Point E [20] is second_intersection_plc for A, t, omega
+    o_{22}: Line o_{22} = LE [22] is line for B, E
+    L: Point L [23] is intersection_ll for o_{21}, o_{22}
+    omega2: Circle omega2 [30] is circumcircle for B, D, L
+    P: Point P [32] is second_intersection_pcc for B, omega, omega2
+    x: Line x [33] is tangent_line for P, omega2
+    y: Line y = BS [17] is line for B, S
+    z: Line z [34] is internal_angle_bisector for A, B, C
 
 Known Properties of All Objects
 point on line
-    Point L [23], Line o_{22} [22]
-    Point A [0], Line w [5]
-    Point D [19], Line t [18]
-    Point B [1], Line u [3]
-    Point P [32], Line x [33]
-    Point E [20], Line o_{22} [22]
-    Point C [2], Line v [4]
-    Point A [0], Line v [4]
-    Point D [19], Line y [17]
-    Point B [1], Line w [5]
-    Point B [1], Line y [17]
-    Point A [0], Line z [34]
-    Point E [20], Line t [18]
-    Point S [14], Line y [17]
-    Point C [2], Line u [3]
-    Point A [0], Line t [18]
-    Point B [1], Line o_{22} [22]
+    L, o_{22}
+    A, w
+    D, t
+    B, u
+    P, x
+    E, o_{22}
+    C, v
+    A, v
+    D, y
+    B, w
+    B, y
+    A, z
+    E, t
+    S, y
+    C, u
+    A, t
+    B, o_{22}
 
 point on circle
-    Point B [1], Circle omega [12]
-    Point D [19], Circle omega2 [30]
-    Point P [32], Circle omega [12]
-    Point P [32], Circle omega2 [30]
-    Point B [1], Circle omega2 [30]
-    Point A [0], Circle omega [12]
-    Point C [2], Circle omega [12]
-    Point S [14], Circle omega [12]
-    Point E [20], Circle omega [12]
-    Point L [23], Circle omega2 [30]
+    B, omega
+    D, omega2
+    P, omega
+    P, omega2
+    B, omega2
+    A, omega
+    C, omega
+    S, omega
+    E, omega
+    L, omega2
 
 line tangent to circle
-    Line x [33], Circle omega2 [30]
+    x, omega2
 
 line perpendicular to line
-    Line u [3], Line t [18]
+    u, t
 
 line parallel to line
 
 circle tangent to circle
 
 collinear points
-    Point B [1], Point E [20], Point L [23]
-    Point B [1], Point S [14], Point D [19]
-    Point A [0], Point D [19], Point E [20]
+    B, E, L
+    B, S, D
+    A, D, E
 
 concyclic points
-    Point A [0], Point B [1], Point C [2], Point S [14]
-    Point B [1], Point C [2], Point S [14], Point E [20]
-    Point A [0], Point B [1], Point C [2], Point E [20]
-    Point A [0], Point C [2], Point S [14], Point E [20]
-    Point B [1], Point C [2], Point S [14], Point P [32]
-    Point A [0], Point S [14], Point E [20], Point P [32]
-    Point A [0], Point B [1], Point C [2], Point P [32]
-    Point A [0], Point C [2], Point S [14], Point P [32]
-    Point B [1], Point C [2], Point E [20], Point P [32]
-    Point A [0], Point C [2], Point E [20], Point P [32]
-    Point B [1], Point S [14], Point E [20], Point P [32]
-    Point C [2], Point S [14], Point E [20], Point P [32]
-    Point A [0], Point B [1], Point S [14], Point E [20]
-    Point A [0], Point B [1], Point S [14], Point P [32]
-    Point B [1], Point D [19], Point L [23], Point P [32]
-    Point A [0], Point B [1], Point E [20], Point P [32]
+    A, B, C, S
+    B, C, S, E
+    A, B, C, E
+    A, C, S, E
+    B, C, S, P
+    A, S, E, P
+    A, B, C, P
+    A, C, S, P
+    B, C, E, P
+    A, C, E, P
+    B, S, E, P
+    C, S, E, P
+    A, B, S, E
+    A, B, S, P
+    B, D, L, P
+    A, B, E, P
 
 concurrent lines
-    Line v [4], Line w [5], Line t [18]
-    Line w [5], Line t [18], Line z [34]
-    Line u [3], Line y [17], Line o_{22} [22]
-    Line u [3], Line w [5], Line y [17]
-    Line w [5], Line y [17], Line o_{22} [22]
-    Line u [3], Line w [5], Line o_{22} [22]
-    Line v [4], Line t [18], Line z [34]
-    Line v [4], Line w [5], Line z [34]
+    v, w, t
+    w, t, z
+    u, y, o_{22}
+    u, w, y
+    w, y, o_{22}
+    u, w, o_{22}
+    v, t, z
+    v, w, z
 
 
 Unknown Properties of All Objects
@@ -109,10 +109,10 @@ line parallel to line
 circle tangent to circle
 
 collinear points
-    Point S [14], Point L [23], Point P [32]
+    S, L, P
 
 concyclic points
 
 concurrent lines
-    Line y [17], Line x [33], Line z [34]
+    y, x, z
 
