@@ -23,9 +23,10 @@ class Obj:
         Obj.count += 1
         self.name = f"o_{{{str(self.id)}}}"
 
-        self.recipe_parent_set = False
+        self.recipe_parent_depth_set = False
         self.parents = []
         self.recipe = ""
+        self.depth = 0
 
     @property
     def name_wo_special(self):
@@ -63,7 +64,7 @@ class Point(Obj):
     def __init__(self, x, y):
         for point in Point.points:
             if abs(x - point.x) < EPSILON and abs(y - point.y) < EPSILON:
-                self.recipe_parent_set = True
+                self.recipe_parent_depth_set = True
                 return
         super().__init__(0)
         self.x = x
@@ -71,7 +72,7 @@ class Point(Obj):
         Point.points.append(self)
     
     def __repr__(self):
-        return f"Point {self.name} [{self.id}] {self.description}"
+        return f"Point {self.name} [{self.id}](depth {self.depth}) {self.description}"
     
     def set_dir(self, properties, objects):
         """find the emptiest part around the point to put the label"""
@@ -165,7 +166,7 @@ class Line(Obj):
             kb = line.b / b
             kc = line.c / c
             if abs(ka - kb) < EPSILON and abs(ka - kc) < EPSILON:
-                self.recipe_parent_set = True
+                self.recipe_parent_depth_set = True
                 return
         super().__init__(1)
         self.a = a
@@ -175,8 +176,8 @@ class Line(Obj):
     
     def __repr__(self):
         if not self.lmrmf:
-            return f"Line {self.name} [{self.id}] {self.description}"
-        return f"Line {self.name} = {self.lmf.name}{self.rmf.name} [{self.id}] {self.description}"
+            return f"Line {self.name} [{self.id}](depth {self.depth}) {self.description}"
+        return f"Line {self.name} = {self.lmf.name}{self.rmf.name} [{self.id}](depth {self.depth}) {self.description}"
     
     def __call__(self, a):
         return self.a * a.x + self.b * a.y - self.c
@@ -242,7 +243,7 @@ class Circle(Obj):
     def __init__(self, o, r):
         for circle in Circle.circles:
             if abs(circle.o.x - o.x) < EPSILON and abs(circle.o.y - o.y) < EPSILON and abs(circle.r - r) < EPSILON:
-                self.recipe_parent_set = True
+                self.recipe_parent_depth_set = True
                 return
         super().__init__(2)
         self.o = o
@@ -250,7 +251,7 @@ class Circle(Obj):
         Circle.circles.append(self)
 
     def __repr__(self):
-        return f"Circle {self.name} [{self.id}] {self.description}"
+        return f"Circle {self.name} [{self.id}](depth {self.depth}) {self.description}"
     
     def asy_definition(self) -> str:
         """asy line for defining this circle"""

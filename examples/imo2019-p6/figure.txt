@@ -1,26 +1,26 @@
 Object in the Figure
-    A: Point A [0] is triangle for 
-    B: Point B [1] is triangle for 
-    C: Point C [2] is triangle for 
-    I: Point I [10] is incenter for A, B, C
-    omega: Circle omega [12] is incircle for A, B, C
-    o_{3}: Line o_{3} = BC [3] is line for B, C
-    D: Point D [14] is tangent_point for o_{3}, omega
-    o_{4}: Line o_{4} = AC [4] is line for A, C
-    E: Point E [16] is tangent_point for o_{4}, omega
-    o_{5}: Line o_{5} = BA [5] is line for A, B
-    F: Point F [18] is tangent_point for o_{5}, omega
-    o_{19}: Line o_{19} = FE [19] is line for E, F
-    o_{20}: Line o_{20} = RD [20] is perpendicular_line for D, o_{19}
-    R: Point R [21] is second_intersection_plc for D, o_{20}, omega
-    o_{22}: Line o_{22} = AP [22] is line for A, R
-    P: Point P [23] is second_intersection_plc for R, o_{22}, omega
-    o_{32}: Circle o_{32} [32] is circumcircle for P, C, E
-    o_{41}: Circle o_{41} [41] is circumcircle for P, B, F
-    Q: Point Q [43] is second_intersection_pcc for P, o_{32}, o_{41}
-    x: Line x = ID [13] is perpendicular_line for I, o_{3}
-    y: Line y = PQ [42] is radical_axis for o_{32}, o_{41}
-    z: Line z [44] is perpendicular_through for A, I
+    A: Point A [0](depth 0) is triangle for 
+    B: Point B [1](depth 0) is triangle for 
+    C: Point C [2](depth 0) is triangle for 
+    I: Point I [10](depth 1) is incenter for A, B, C
+    omega: Circle omega [12](depth 1) is incircle for A, B, C
+    o_{3}: Line o_{3} = BC [3](depth 1) is line for B, C
+    D: Point D [14](depth 2) is tangent_point for o_{3}, omega
+    o_{4}: Line o_{4} = AC [4](depth 1) is line for A, C
+    E: Point E [16](depth 2) is tangent_point for o_{4}, omega
+    o_{5}: Line o_{5} = BA [5](depth 1) is line for A, B
+    F: Point F [18](depth 2) is tangent_point for o_{5}, omega
+    o_{19}: Line o_{19} = FE [19](depth 3) is line for E, F
+    o_{20}: Line o_{20} = RD [20](depth 4) is perpendicular_line for D, o_{19}
+    R: Point R [21](depth 5) is second_intersection_plc for D, o_{20}, omega
+    o_{22}: Line o_{22} = AP [22](depth 6) is line for A, R
+    P: Point P [23](depth 7) is second_intersection_plc for R, o_{22}, omega
+    o_{32}: Circle o_{32} [32](depth 8) is circumcircle for P, C, E
+    o_{41}: Circle o_{41} [41](depth 8) is circumcircle for P, B, F
+    Q: Point Q [43](depth 9) is second_intersection_pcc for P, o_{32}, o_{41}
+    x: Line x = ID [13](depth 2) is perpendicular_line for I, o_{3}
+    y: Line y = PQ [42](depth 9) is radical_axis for o_{32}, o_{41}
+    z: Line z [44](depth 2) is perpendicular_through for A, I
 
 Known Properties of All Objects
 point on line

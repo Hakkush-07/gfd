@@ -1,23 +1,23 @@
 Object in the Figure
-    A: Point A [0] is triangle for 
-    B: Point B [1] is triangle for 
-    C: Point C [2] is triangle for 
-    u: Line u = BC [3] is line for B, C
-    v: Line v = AC [4] is line for A, C
-    w: Line w = BA [5] is line for A, B
-    omega: Circle omega [12] is circumcircle for A, B, C
-    S: Point S [14] is midpoint_of_arc for B, C, omega
-    t: Line t = AE [18] is perpendicular_line for A, u
-    o_{17}: Line y = BS [17] is line for B, S
-    D: Point D [19] is intersection_ll for t, y
-    E: Point E [20] is second_intersection_plc for A, t, omega
-    o_{22}: Line o_{22} = LE [22] is line for B, E
-    L: Point L [23] is intersection_ll for o_{21}, o_{22}
-    omega2: Circle omega2 [30] is circumcircle for B, D, L
-    P: Point P [32] is second_intersection_pcc for B, omega, omega2
-    x: Line x [33] is tangent_line for P, omega2
-    y: Line y = BS [17] is line for B, S
-    z: Line z [34] is internal_angle_bisector for A, B, C
+    A: Point A [0](depth 0) is triangle for 
+    B: Point B [1](depth 0) is triangle for 
+    C: Point C [2](depth 0) is triangle for 
+    u: Line u = BC [3](depth 1) is line for B, C
+    v: Line v = AC [4](depth 1) is line for A, C
+    w: Line w = BA [5](depth 1) is line for A, B
+    omega: Circle omega [12](depth 1) is circumcircle for A, B, C
+    S: Point S [14](depth 2) is midpoint_of_arc for B, C, omega
+    t: Line t = AE [18](depth 2) is perpendicular_line for A, u
+    o_{17}: Line y = BS [17](depth 3) is line for B, S
+    D: Point D [19](depth 4) is intersection_ll for t, y
+    E: Point E [20](depth 3) is second_intersection_plc for A, t, omega
+    o_{22}: Line o_{22} = LE [22](depth 4) is line for B, E
+    L: Point L [23](depth 6) is intersection_ll for o_{21}, o_{22}
+    omega2: Circle omega2 [30](depth 7) is circumcircle for B, D, L
+    P: Point P [32](depth 8) is second_intersection_pcc for B, omega, omega2
+    x: Line x [33](depth 9) is tangent_line for P, omega2
+    y: Line y = BS [17](depth 3) is line for B, S
+    z: Line z [34](depth 1) is internal_angle_bisector for A, B, C
 
 Known Properties of All Objects
 point on line

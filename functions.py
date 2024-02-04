@@ -96,9 +96,10 @@ def construction_function():
             result_lst = list(result) if type(result) == tuple else [result]
 
             for obj in result_lst:
-                if not obj.recipe_parent_set:
+                if not obj.recipe_parent_depth_set:
                     obj.parents = args
                     obj.recipe = func.__name__
+                    obj.depth = 1 + (max(map(lambda obj: obj.depth, args)) if args else -1)
 
             # for input and output objects, make every claim and check if true, this will be the known properties
             combined = list(args) + result_lst

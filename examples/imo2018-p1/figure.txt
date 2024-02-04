@@ -1,20 +1,20 @@
 Object in the Figure
-    A: Point A [0] is triangle for 
-    B: Point B [1] is triangle for 
-    C: Point C [2] is triangle for 
-    gamma: Circle gamma [12] is circumcircle for A, B, C
-    u: Line u = BC [3] is line for B, C
-    v: Line v = AC [4] is line for A, C
-    w: Line w = BA [5] is line for A, B
-    D: Point D [13] is random_point_on_segment for A, B
-    o_{16}: Line x = DE [16] is perpendicular_line for D, o_{14}
-    E: Point E [17] is intersection_ll for v, x
-    o_{18}: Line o_{18} [18] is perpendicular_bisector for B, D
-    F: Point F [19] is intersections_lc for o_{18}, gamma
-    o_{21}: Line o_{21} [21] is perpendicular_bisector for C, E
-    G: Point G [23] is intersections_lc for o_{21}, gamma
-    x: Line x = DE [16] is perpendicular_line for D, o_{14}
-    y: Line y = FG [24] is line for F, G
+    A: Point A [0](depth 0) is triangle for 
+    B: Point B [1](depth 0) is triangle for 
+    C: Point C [2](depth 0) is triangle for 
+    gamma: Circle gamma [12](depth 1) is circumcircle for A, B, C
+    u: Line u = BC [3](depth 1) is line for B, C
+    v: Line v = AC [4](depth 1) is line for A, C
+    w: Line w = BA [5](depth 1) is line for A, B
+    D: Point D [13](depth 1) is random_point_on_segment for A, B
+    o_{16}: Line x = DE [16](depth 2) is perpendicular_line for D, o_{14}
+    E: Point E [17](depth 3) is intersection_ll for v, x
+    o_{18}: Line o_{18} [18](depth 2) is perpendicular_bisector for B, D
+    F: Point F [19](depth 3) is intersections_lc for o_{18}, gamma
+    o_{21}: Line o_{21} [21](depth 4) is perpendicular_bisector for C, E
+    G: Point G [23](depth 5) is intersections_lc for o_{21}, gamma
+    x: Line x = DE [16](depth 2) is perpendicular_line for D, o_{14}
+    y: Line y = FG [24](depth 6) is line for F, G
 
 Known Properties of All Objects
 point on line
