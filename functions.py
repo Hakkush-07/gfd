@@ -67,6 +67,7 @@ class ConstructionFunction:
         self.function = func
         self.name = self.function.__name__
         self.parameters = [parameter_mapping[x] for x in signature(self.function).parameters]
+        self.p, self.l, self.c = self.parameters.count(Point), self.parameters.count(Line), self.parameters.count(Circle)
     
     def __repr__(self):
         return f"Construction Function {self.name} that takes {len(self)} parameters, {[cls.__name__ for cls in self.parameters]}"
@@ -279,11 +280,6 @@ def random_point_on_circle(s) -> Point:
     return Point(s.o.x + s.r * cos(t), s.o.y + s.r * sin(t))
 
 @construction_function()
-def random_point_on_unit_circle() -> Point:
-    """random point on unit circle"""
-    return random_point_on_circle(unit_circle())
-
-@construction_function()
 def random_point_on_segment(a, b) -> Point:
     """random point on the line segment ab"""
     t = random()
@@ -295,43 +291,6 @@ def random_point_on_arc(s, a, b):
     if not is_pc(a, s) or not is_pc(b, s):
         raise FigureException(f"Points {a.name} or {b.name} is not on circle {s.name} in construction function random_point_on_arc")
     return random_point_on_arc_angle(s, angle_ps(a, s), angle_ps(b, s))
-
-@construction_function()
-def random_point() -> Point:
-    """random point on unit circle"""
-    return random_point_on_unit_circle()
-
-@construction_function()
-def random_line() -> Line:
-    """random line passing through two random points on the unit circle"""
-    return line(random_point(), random_point())
-
-@construction_function()
-def random_circle() -> Circle:
-    """random circle whose center is on the unit circle and has a radius between 0 and 1"""
-    return Circle(random_point(), random())
-
-@construction_function()
-def random_triangle_on_circle(s) -> tuple[Point, Point, Point]:
-    """random triangle on circle s"""
-    a = random_point_on_circle(s)
-    b = random_point_on_circle(s)
-    c = random_point_on_circle(s)
-    return a, b, c
-
-@construction_function()
-def random_triangle_on_unit_circle() -> tuple[Point, Point, Point]:
-    """random triangle on unit circle"""
-    return random_triangle_on_circle(unit_circle())
-
-@construction_function()
-def random_nice_triangle() -> tuple[Point, Point, Point]:
-    """random nice triangle, angles close to 60, 45, 75"""
-    x = 5
-    a = random_point_on_arc_angle(unit_circle(), 120 - x, 120 + x, radian=False)
-    b = random_point_on_arc_angle(unit_circle(), 210 - x, 210 + x, radian=False)
-    c = random_point_on_arc_angle(unit_circle(), 330 - x, 330 + x, radian=False)
-    return a, b, c
 
 @construction_function()
 def random_line_through_point(a):

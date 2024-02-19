@@ -42,4 +42,12 @@ To produce the figure pdf, use the following command. For more information about
 asy main.asy -o main.pdf -f pdf -noV
 ```
 
+## Random GFD
+
+to create random gfd
+
+```sh
+python3 random_gfd.py
+```
+
 

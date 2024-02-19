@@ -190,6 +190,7 @@ class Line(Obj):
         """based on the properties, find the leftmost and rightmost points on the line, used for drawing in asy"""
         points = [pl[0] for pl in properties["point on line"] if self in pl]
         self.lmrm = False
+        self.lmrmf = False
         if not points:
             return
         self.lmrm = True
@@ -198,7 +199,6 @@ class Line(Obj):
         self.lm_in_figure = self.lm in objects
         self.rm_in_figure = self.rm in objects
         points_in_figure = [p for p in points if p in objects]
-        self.lmrmf = False
         if len(points_in_figure) < 2:
             return
         self.lmrmf = True

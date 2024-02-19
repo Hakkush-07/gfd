@@ -189,9 +189,29 @@ class Figure:
 
         self.line_counters = []
 
+    @property
+    def p(self):
+        return [(n, o) for n, o in self.objects.items() if o.order == 0]
+    
+    @property
+    def l(self):
+        return [(n, o) for n, o in self.objects.items() if o.order == 1]
+    
+    @property
+    def c(self):
+        return [(n, o) for n, o in self.objects.items() if o.order == 2]
+
     def interpret(self, filename):
         """starting point"""
         self.interpret_file(filename)
+
+        objs = self.objects.values()
+
+        for obj in objs:
+            if obj.order == 0:
+                obj.set_dir(properties, objs)
+            if obj.order == 1:
+                obj.set_lm_rm(properties, objs)
 
         with open(f"{filename[:-4]}.asy", "w+") as file:
             file.write(self.asy())
